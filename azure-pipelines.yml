@@ -65,7 +65,7 @@ stages:
   - template: pipeline-templates/job/deploy.yml
     parameters:
       Environment: AT
-      SolutionBaseName: $(SolutionBaseName)
+      SolutionBaseName: $(SolutionBaseName).Api
       ServiceConnection: SFA-DAS-DevTest-ARM
       OverrideBlockOnPossibleDataLoss: ${{ parameters.OverrideBlockOnPossibleDataLoss  }}
 
@@ -79,6 +79,7 @@ stages:
 #   - template: pipeline-templates/job/deploy.yml
 #     parameters:
 #       Environment: TEST
+#       SolutionBaseName: $(SolutionBaseName).Api
 #       ServiceConnection: SFA-DAS-DevTest-ARM
 #       OverrideBlockOnPossibleDataLoss: ${{ parameters.OverrideBlockOnPossibleDataLoss  }}
 
@@ -92,6 +93,7 @@ stages:
 #   - template: pipeline-templates/job/deploy.yml
 #     parameters:
 #       Environment: TEST2
+#       SolutionBaseName: $(SolutionBaseName).Api
 #       ServiceConnection: SFA-DAS-DevTest-ARM
 #       OverrideBlockOnPossibleDataLoss: ${{ parameters.OverrideBlockOnPossibleDataLoss  }}
 
@@ -105,6 +107,7 @@ stages:
 #   - template: pipeline-templates/job/deploy.yml
 #     parameters:
 #       Environment: PP
+#       SolutionBaseName: $(SolutionBaseName).Api
 #       ServiceConnection: SFA-DIG-PreProd-ARM
 #       OverrideBlockOnPossibleDataLoss: ${{ parameters.OverrideBlockOnPossibleDataLoss  }}
 
@@ -119,6 +122,7 @@ stages:
 #   - template: pipeline-templates/job/deploy.yml
 #     parameters:
 #       Environment: PROD
+#       SolutionBaseName: $(SolutionBaseName).Api
 #       ServiceConnection: SFA-DIG-Prod-ARM
 #       OverrideBlockOnPossibleDataLoss: ${{ parameters.OverrideBlockOnPossibleDataLoss  }}
 
@@ -132,6 +136,7 @@ stages:
 #   - template: pipeline-templates/job/deploy.yml
 #     parameters:
 #       Environment: MO
+#       SolutionBaseName: $(SolutionBaseName).Api
 #       ServiceConnection: SFA-ASM-ModelOffice-ARM
 #       OverrideBlockOnPossibleDataLoss: ${{ parameters.OverrideBlockOnPossibleDataLoss  }}
 
@@ -145,5 +150,6 @@ stages:
 #   - template: pipeline-templates/job/deploy.yml
 #     parameters:
 #       Environment: DEMO
+#       SolutionBaseName: $(SolutionBaseName).Api
 #       ServiceConnection: SFA-DAS-DevTest-ARM
 #       OverrideBlockOnPossibleDataLoss: ${{ parameters.OverrideBlockOnPossibleDataLoss  }}
