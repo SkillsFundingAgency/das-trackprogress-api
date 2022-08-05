@@ -1,6 +1,7 @@
 ﻿using AutoFixture;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.TrackProgress.Api.Tests.Utils;
+using SFA.DAS.TrackProgress.Database;
 
 namespace SFA.DAS.TrackProgress.Api.Tests;
 

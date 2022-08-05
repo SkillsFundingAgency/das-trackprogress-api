@@ -17,8 +17,12 @@ public class TrackSimpleProgress : ApiFixture
         {
             db.Progress.Should().ContainEquivalentOf(new
             {
-                Ukprn = ukprn,
-                Uln = uln,
+                Apprenticeship = new
+                {
+                    Ukprn = ukprn,
+                    Uln = uln,
+                    StartDate = DateOnly.FromDateTime(startDate),
+                },
                 OnTrack = progress.OnTrack.Value,
             });
         });

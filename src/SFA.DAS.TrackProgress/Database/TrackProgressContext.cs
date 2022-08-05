@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SFA.DAS.TrackProgress.Models;
 
-namespace SFA.DAS.TrackProgress;
+namespace SFA.DAS.TrackProgress.Database;
 
 public class TrackProgressContext : DbContext
 {
@@ -10,4 +10,9 @@ public class TrackProgressContext : DbContext
     }
 
     public DbSet<Progress> Progress { get; set; } = null!;
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfiguration(new ConfigureProgress());
+    }
 }

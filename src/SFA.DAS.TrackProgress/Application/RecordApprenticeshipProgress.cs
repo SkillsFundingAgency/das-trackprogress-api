@@ -1,23 +1,19 @@
 ﻿using MediatR;
+using SFA.DAS.TrackProgress.Database;
 using SFA.DAS.TrackProgress.DTOs;
+using SFA.DAS.TrackProgress.Models;
 
 namespace SFA.DAS.TrackProgress.Application;
 
-public record ApprenticeshipId { long Ukrpn; long Uln; DateOnly StartDate; };
-
 public class RecordApprenticeshipProgress : IRequest
 {
-    public RecordApprenticeshipProgress(long ukprn, long uln, DateOnly startDate, ProgressDto progress)
+    public RecordApprenticeshipProgress(ApprenticeshipId apprenticeship, ProgressDto progress)
     {
-        Ukprn = ukprn;
-        Uln = uln;
-        StartDate = startDate;
+        Apprenticeship = apprenticeship;
         Progress = progress;
     }
 
-    public long Ukprn { get; set; }
-    public long Uln { get; set; }
-    public DateOnly StartDate { get; set; }
+    public ApprenticeshipId Apprenticeship { get; set; }
     public ProgressDto Progress { get; set; }
 }
 
@@ -32,7 +28,7 @@ public class RecordApprenticeshipProgressHandler : IRequestHandler<RecordApprent
 
     public async Task<Unit> Handle(RecordApprenticeshipProgress request, CancellationToken cancellationToken)
     {
-        context.Progress.Add(new Models.Progress(request.Ukprn, request.Uln, request.StartDate, request.Progress));
+        context.Progress.Add(new Models.Progress(request.Apprenticeship, request.Progress));
         await context.SaveChangesAsync();
         return Unit.Value;
     }

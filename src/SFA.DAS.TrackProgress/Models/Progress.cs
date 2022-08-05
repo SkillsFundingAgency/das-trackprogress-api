@@ -7,15 +7,13 @@ public class Progress
     private Progress()
     { }
 
-    public Progress(long ukprn, long uln, DateOnly startDate, ProgressDto progress)
+    public Progress(ApprenticeshipId apprenticeship, ProgressDto progress)
     {
-        Ukprn = ukprn;
-        Uln = uln;
+        Apprenticeship = apprenticeship;
         OnTrack = progress.OnTrack ?? false;
     }
 
-    public int Id { get; private set; }
-    public long Ukprn { get; private set; }
-    public long Uln { get; private set; }
+    public long Id { get; private set; }
+    public ApprenticeshipId Apprenticeship { get; private set; } = null!;
     public bool OnTrack { get; private set; }
 }
