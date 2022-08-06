@@ -1,11 +1,13 @@
 ﻿using AutoFixture;
-using SFA.DAS.TrackProgress.Api.Tests;
+using Microsoft.Extensions.DependencyInjection;
+using SFA.DAS.TrackProgress.Api.Tests.Utils;
 
-namespace SFA.DAS.TrackProgress.Api.Configuration;
+namespace SFA.DAS.TrackProgress.Api.Tests;
 
 public class ApiFixture
 {
     private TrackProgressApiFactory factory = null!;
+    private IServiceScopeFactory scopeFactory;
     private protected Fixture fixture = null!;
     private protected HttpClient client = null!;
 
@@ -13,6 +15,7 @@ public class ApiFixture
     public void OneTimeSetup()
     {
         factory = new TrackProgressApiFactory();
+        scopeFactory = factory.Services.GetRequiredService<IServiceScopeFactory>();
         client = factory.CreateClient();
     }
 
@@ -21,4 +24,21 @@ public class ApiFixture
     {
         fixture = new Fixture();
     }
+
+    protected async Task ExecuteScopeAsync(Func<IServiceProvider, Task> action)
+    {
+        using var scope = scopeFactory.CreateScope();
+        await action(scope.ServiceProvider);
+    }
+
+    public Task ExecuteDbContextAsync(Func<TrackProgressContext, Task> action)
+        => ExecuteScopeAsync(sp => action(sp.GetRequiredService<TrackProgressContext>()));
+
+    protected Task VerifyDatabase(Action<TrackProgressContext> action)
+        => ExecuteScopeAsync(sp =>
+        {
+            action(sp.GetRequiredService<TrackProgressContext>());
+            return Task.CompletedTask;
+        });
+
 }

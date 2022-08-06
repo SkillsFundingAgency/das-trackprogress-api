@@ -1,13 +1,23 @@
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.TrackProgress;
 
 namespace SFA.DAS.TrackProgressApi.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("/apprenticeship")]
 public class TrackProgressController : ControllerBase
 {
-    [HttpGet(Name = "TrackProgress")]
-    public void Get()
+    public TrackProgressController(TrackProgressContext context)
     {
+        Context = context;
+    }
+
+    public TrackProgressContext Context { get; }
+
+    [HttpPost("{ukprn}/{uln}/{startDate}/progress")]
+    public void Post(long ukprn, long uln, DateOnly startDate)
+    {
+        Context.Progress.Add(new TrackProgress.Models.Progress());
+        Context.SaveChanges();
     }
 }

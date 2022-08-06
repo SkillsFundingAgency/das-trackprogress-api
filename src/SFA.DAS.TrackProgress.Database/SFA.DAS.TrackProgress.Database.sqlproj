@@ -7,8 +7,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>4.1</ProjectVersion>
     <ProjectGuid>{5f0a9154-bf28-4f1e-8f97-73b8db83eddd}</ProjectGuid>
-	<DSP>Microsoft.Data.Tools.Schema.Sql.SqlAzureV12DatabaseSchemaProvider</DSP>
-	<OutputType>Database</OutputType>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.SqlAzureV12DatabaseSchemaProvider</DSP>
+    <OutputType>Database</OutputType>
     <RootPath>
     </RootPath>
     <RootNamespace>SFA.DAS.TrackProgress.Database</RootNamespace>
@@ -59,5 +59,8 @@
   </ItemGroup>
   <ItemGroup>
     <Build Include="ApprenticeProgress.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="SFA.DAS.TrackProgress.Database.refactorlog" />
   </ItemGroup>
 </Project>
