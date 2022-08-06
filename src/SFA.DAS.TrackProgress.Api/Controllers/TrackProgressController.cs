@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.TrackProgress.Application;
 using SFA.DAS.TrackProgress.DTOs;
 using SFA.DAS.TrackProgress.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace SFA.DAS.TrackProgressApi.Controllers;
 
@@ -15,7 +16,10 @@ public class TrackProgressController : ControllerBase
     public TrackProgressController(IMediator mediator) => this.mediator = mediator;
 
     [HttpPost("{ukprn}/{uln}/{startDate}/progress")]
-    public void Post(long ukprn, long uln, DateOnly startDate, ProgressDto progress)
+    public void Post(
+        [Range(1, double.MaxValue, ErrorMessage = "UKPRN must be greater than zero.")] long ukprn,
+        [Range(1, double.MaxValue, ErrorMessage = "ULN must be greater than zero.")] long uln,
+        DateOnly startDate, ProgressDto progress)
     {
         mediator.Send(new RecordApprenticeshipProgress(new ApprenticeshipId(ukprn, uln, startDate), progress));
     }

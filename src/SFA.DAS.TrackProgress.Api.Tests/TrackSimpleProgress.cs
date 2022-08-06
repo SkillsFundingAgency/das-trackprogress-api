@@ -27,4 +27,45 @@ public class TrackSimpleProgress : ApiFixture
             });
         });
     }
+
+    [TestCase(0)]
+    [TestCase(-1)]
+    public async Task Validate_ukprn(long ukprn)
+    {
+        var response = await client.PostAsJsonAsync($"/apprenticeship/{ukprn}/1/2022-08-01/progress", new ProgressDto());
+        response.Should().BeAs(new
+        {
+            errors = new
+            {
+                ukprn = new[] { "UKPRN must be greater than zero." }
+            }
+        });
+    }
+
+    [TestCase(0)]
+    [TestCase(-1)]
+    public async Task Validate_uln(long uln)
+    {
+        var response = await client.PostAsJsonAsync($"/apprenticeship/1/{uln}/2022-08-01/progress", new ProgressDto());
+        response.Should().BeAs(new
+        {
+            errors = new
+            {
+                uln = new[] { "ULN must be greater than zero." }
+            }
+        });
+    }
+
+    [TestCase("not-a-date")]
+    public async Task Validate_uln(string startDate)
+    {
+        var response = await client.PostAsJsonAsync($"/apprenticeship/1/1/{startDate}/progress", new ProgressDto());
+        response.Should().BeAs(new
+        {
+            errors = new
+            {
+                startDate = new[] { "The input was not valid." }
+            }
+        });
+    }
 }
