@@ -2,5 +2,6 @@
 
 public class ProgressDto
 {
-    public bool? OnTrack { get; set; }
+    public long ApprovalId { get; set; }
+    public bool OnTrack { get; set; }
 }

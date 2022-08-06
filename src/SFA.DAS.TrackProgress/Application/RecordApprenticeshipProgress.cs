@@ -22,14 +22,18 @@ public class RecordApprenticeshipProgressHandler : IRequestHandler<RecordApprent
     private readonly TrackProgressContext context;
 
     public RecordApprenticeshipProgressHandler(TrackProgressContext context)
-    {
-        this.context = context;
-    }
+        => this.context = context;
 
     public async Task<Unit> Handle(RecordApprenticeshipProgress request, CancellationToken cancellationToken)
     {
-        context.Progress.Add(new Models.Progress(request.Apprenticeship, request.Progress));
-        await context.SaveChangesAsync();
+        context.Progress.Add(
+            new Progress(
+                request.Apprenticeship,
+                request.Progress.ApprovalId,
+                request.Progress.OnTrack));
+
+        await context.SaveChangesAsync(cancellationToken);
+
         return Unit.Value;
     }
 }

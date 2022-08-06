@@ -23,7 +23,8 @@ public class TrackSimpleProgress : ApiFixture
                     Uln = uln,
                     StartDate = DateOnly.FromDateTime(startDate),
                 },
-                OnTrack = progress.OnTrack.Value,
+                progress.ApprovalId,
+                progress.OnTrack,
             });
         });
     }

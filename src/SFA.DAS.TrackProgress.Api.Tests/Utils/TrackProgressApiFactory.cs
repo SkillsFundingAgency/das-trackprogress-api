@@ -13,10 +13,13 @@ public class TrackProgressApiFactory : WebApplicationFactory<Program>
     {
         builder.ConfigureTestServices(services =>
         {
-            services.Remove<DbContextOptions<TrackProgressContext>>();
-
-            var db = Guid.NewGuid().ToString();
-            services.AddDbContext<TrackProgressContext>(options => options.UseInMemoryDatabase(db));
+            UseInMemoryDatabase(services);
         });
+    }
+
+    private static void UseInMemoryDatabase(IServiceCollection services)
+    {
+        services.Remove<DbContextOptions<TrackProgressContext>>();
+        services.AddDbContext<TrackProgressContext>(options => options.UseInMemoryDatabase("db"));
     }
 }
