@@ -1,5 +1,7 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.TrackProgress;
+using SFA.DAS.TrackProgress.Application;
+using SFA.DAS.TrackProgress.DTOs;
 
 namespace SFA.DAS.TrackProgressApi.Controllers;
 
@@ -7,17 +9,13 @@ namespace SFA.DAS.TrackProgressApi.Controllers;
 [Route("/apprenticeship")]
 public class TrackProgressController : ControllerBase
 {
-    public TrackProgressController(TrackProgressContext context)
-    {
-        Context = context;
-    }
+    private readonly IMediator mediator;
 
-    public TrackProgressContext Context { get; }
+    public TrackProgressController(IMediator mediator) => this.mediator = mediator;
 
     [HttpPost("{ukprn}/{uln}/{startDate}/progress")]
-    public void Post(long ukprn, long uln, DateOnly startDate)
+    public void Post(long ukprn, long uln, DateOnly startDate, ProgressDto progress)
     {
-        Context.Progress.Add(new TrackProgress.Models.Progress());
-        Context.SaveChanges();
+        mediator.Send(new RecordApprenticeshipProgress(ukprn, uln, startDate, progress));
     }
 }

@@ -15,7 +15,12 @@ public class TrackSimpleProgress : ApiFixture
 
         await VerifyDatabase(db =>
         {
-            db.Progress.Should().NotBeEmpty();
+            db.Progress.Should().ContainEquivalentOf(new
+            {
+                Ukprn = ukprn,
+                Uln = uln,
+                OnTrack = progress.OnTrack.Value,
+            });
         });
     }
 }

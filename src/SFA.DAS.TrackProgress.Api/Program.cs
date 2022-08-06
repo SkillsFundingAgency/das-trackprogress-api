@@ -1,8 +1,10 @@
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.TrackProgress;
 using SFA.DAS.TrackProgress.Api;
 using SFA.DAS.TrackProgress.Api.AppStart;
 using SFA.DAS.TrackProgress.Api.Configuration;
+using SFA.DAS.TrackProgress.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +28,7 @@ builder.Services.AddApiAuthentication(config.AzureAd);
 builder.Services.AddDbContext<TrackProgressContext>(options =>
     options.UseSqlServer(config.ApplicationSettings.DbConnectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+builder.Services.AddMediatR(typeof(TrackProgressContext));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
