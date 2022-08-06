@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.TrackProgress", "SF
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.TrackProgress.Api", "SFA.DAS.TrackProgress.Api\SFA.DAS.TrackProgress.Api.csproj", "{406557BA-9552-4DB1-AA88-8D06F8A4E9FD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.TrackProgress.Api.Tests", "SFA.DAS.TrackProgress.Api.Tests\SFA.DAS.TrackProgress.Api.Tests.csproj", "{2C8A79FF-3117-4571-9EDA-BFE598B68E6C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.TrackProgress.Api.UnitTests", "SFA.DAS.TrackProgress.Api.UnitTests\SFA.DAS.TrackProgress.Api.UnitTests.csproj", "{2C8A79FF-3117-4571-9EDA-BFE598B68E6C}"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SFA.DAS.TrackProgress.Database", "SFA.DAS.TrackProgress.Database\SFA.DAS.TrackProgress.Database.sqlproj", "{5F0A9154-BF28-4F1E-8F97-73B8DB83EDDD}"
 EndProject
