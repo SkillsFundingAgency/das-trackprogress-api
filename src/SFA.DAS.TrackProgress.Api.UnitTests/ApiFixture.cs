@@ -32,7 +32,7 @@ public class ApiFixture
         await action(scope.ServiceProvider);
     }
 
-    public Task ExecuteDbContextAsync(Func<TrackProgressContext, Task> action)
+    protected Task ExecuteDbContextAsync(Func<TrackProgressContext, Task> action)
         => ExecuteScopeAsync(sp => action(sp.GetRequiredService<TrackProgressContext>()));
 
     protected Task VerifyDatabase(Action<TrackProgressContext> action)

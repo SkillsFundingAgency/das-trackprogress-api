@@ -21,7 +21,7 @@ builder.Services.Configure<RouteOptions>(options =>
 });
 builder.Services
     .AddControllers(options => options.UseMonthYearTypeConverter())
-    .AddJsonOptions(options => options.UseMonthYearJsonConverter())
+    .AddJsonOptions(options => options.UseMonthYearTypeConverter())
     ;
 builder.Services.AddApiAuthentication(config.AzureAd);
 builder.Services.AddDbContext<TrackProgressContext>(options =>

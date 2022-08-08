@@ -23,7 +23,7 @@ public static class MonthYearConverter
             // also support MMYYY
         }
 
-        throw new Exception($"`{value}` cannot be converted to MMYYY");
+        throw new ArgumentException($"`{value}` cannot be converted to MMYYY", nameof(value));
     }
 }
 public class MonthYearTypeConverter : TypeConverter
@@ -73,7 +73,7 @@ public static class MvcOptionsExtensions
         return options;
     }
 
-    public static JsonOptions UseMonthYearJsonConverter(this JsonOptions options)
+    public static JsonOptions UseMonthYearTypeConverter(this JsonOptions options)
     {
         options.JsonSerializerOptions.Converters.Add(new MonthYearJsonConverter());
         return options;
