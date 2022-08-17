@@ -19,5 +19,6 @@ public class Progress
     public ApprenticeshipId Apprenticeship { get; private set; }
     public long ApprovalId { get; private set; }
     public long? ApprovalContinuationId { get; private set; }
+    public long ProgressDataVersion { get; private set; } = 1;
     public KsbTaxonomy ProgressData { get; private set; }
 }

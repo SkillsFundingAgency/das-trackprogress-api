@@ -6,6 +6,7 @@
     [StartDate] date NOT NULL,
     [ApprovalId] bigint NOT NULL,
     [ApprovalContinuationId] bigint NULL,
+    [ProgressDataVersion] bigint NOT NULL,
     [ProgressData] nvarchar(max) NOT NULL,
 	[CreatedOn] datetime2 NOT NULL DEFAULT current_timestamp, 
     CONSTRAINT [PK_Progress] PRIMARY KEY ([Id])
