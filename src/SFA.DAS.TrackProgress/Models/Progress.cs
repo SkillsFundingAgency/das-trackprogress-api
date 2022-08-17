@@ -1,21 +1,23 @@
-﻿using SFA.DAS.TrackProgress.DTOs;
-
-namespace SFA.DAS.TrackProgress.Models;
+﻿namespace SFA.DAS.TrackProgress.Models;
 
 public class Progress
 {
     private Progress()
-    { }
+    {
+        Apprenticeship = null!;
+        ProgressData = null!;
+    }
 
-    public Progress(ApprenticeshipId apprenticeship, long approvalId, bool onTrack)
+    public Progress(ApprenticeshipId apprenticeship, long approvalId, KsbTaxonomy knowledges)
     {
         Apprenticeship = apprenticeship;
         ApprovalId = approvalId;
-        OnTrack = onTrack;
+        ProgressData = knowledges;
     }
 
     public long Id { get; private set; }
-    public ApprenticeshipId Apprenticeship { get; private set; } = null!;
+    public ApprenticeshipId Apprenticeship { get; private set; }
     public long ApprovalId { get; private set; }
-    public bool OnTrack { get; private set; }
+    public long? ApprovalContinuationId { get; private set; }
+    public KsbTaxonomy ProgressData { get; private set; }
 }

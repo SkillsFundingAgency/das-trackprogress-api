@@ -8,7 +8,7 @@ namespace SFA.DAS.TrackProgress.Api.Tests;
 public class TrackSimpleProgress : ApiFixture
 {
     [Test, AutoData]
-    public async Task Save_progress_to_database(long ukprn, long uln, DateTime startDate, ProgressDto progress)
+    public async Task Save_progress_to_database(long ukprn, long uln, DateTime startDate, KsbProgress progress)
     {
         var response = await client.PostAsJsonAsync($"/apprenticeship/{ukprn}/{uln}/{startDate:O}/progress", progress);
         response.Should().Be200Ok();
@@ -24,7 +24,12 @@ public class TrackSimpleProgress : ApiFixture
                     StartDate = DateOnly.FromDateTime(startDate),
                 },
                 progress.ApprovalId,
-                progress.OnTrack,
+                ProgressData = new
+                {
+                    progress.Knowledges,
+                    progress.Skills,
+                    progress.Behaviours,
+                },
             });
         });
     }
@@ -33,7 +38,7 @@ public class TrackSimpleProgress : ApiFixture
     [TestCase(-1)]
     public async Task Validate_ukprn(long ukprn)
     {
-        var response = await client.PostAsJsonAsync($"/apprenticeship/{ukprn}/1/2022-08-01/progress", new ProgressDto());
+        var response = await client.PostAsJsonAsync($"/apprenticeship/{ukprn}/1/2022-08-01/progress", new KsbProgress());
         response.Should().BeAs(new
         {
             errors = new
@@ -47,7 +52,7 @@ public class TrackSimpleProgress : ApiFixture
     [TestCase(-1)]
     public async Task Validate_uln(long uln)
     {
-        var response = await client.PostAsJsonAsync($"/apprenticeship/1/{uln}/2022-08-01/progress", new ProgressDto());
+        var response = await client.PostAsJsonAsync($"/apprenticeship/1/{uln}/2022-08-01/progress", new KsbProgress());
         response.Should().BeAs(new
         {
             errors = new
@@ -60,7 +65,7 @@ public class TrackSimpleProgress : ApiFixture
     [TestCase("not-a-date")]
     public async Task Validate_uln(string startDate)
     {
-        var response = await client.PostAsJsonAsync($"/apprenticeship/1/1/{startDate}/progress", new ProgressDto());
+        var response = await client.PostAsJsonAsync($"/apprenticeship/1/1/{startDate}/progress", new KsbProgress());
         response.Should().BeAs(new
         {
             errors = new

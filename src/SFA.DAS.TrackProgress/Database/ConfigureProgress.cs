@@ -18,5 +18,7 @@ public class ConfigureProgress : IEntityTypeConfiguration<Progress>
                 .HasConversion<DateOnlyConverter>()
                 .HasColumnType("date");
         });
+        builder.Property(x => x.ProgressData)
+            .HasConversion<JsonValueConverter<KsbTaxonomy>>();
     }
 }
