@@ -23,7 +23,11 @@ public class TrackSimpleProgress : ApiFixture
                     Uln = uln,
                     StartDate = DateOnly.FromDateTime(startDate),
                 },
-                progress.ApprovalId,
+                Approval = new
+                {
+                    ApprenticeshipId = progress.ApprovalId,
+                    ContinuationId = progress.ApprovalContinuationId,
+                },
                 ProgressData = new
                 {
                     progress.Ksbs,

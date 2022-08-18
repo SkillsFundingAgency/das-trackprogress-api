@@ -30,7 +30,9 @@ public class RecordApprenticeshipProgressHandler : IRequestHandler<RecordApprent
         context.Progress.Add(
             new Progress(
                 request.Apprenticeship,
-                request.Progress.ApprovalId,
+                new ApprovalId(
+                    request.Progress.ApprovalId,
+                    request.Progress.ApprovalContinuationId),
                 new KsbTaxonomy(
                     ToDomainTaxonomy(request.Progress.Ksbs))));
 

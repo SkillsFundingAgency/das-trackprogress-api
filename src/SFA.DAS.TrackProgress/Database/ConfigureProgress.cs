@@ -18,6 +18,11 @@ public class ConfigureProgress : IEntityTypeConfiguration<Progress>
                 .HasConversion<DateOnlyConverter>()
                 .HasColumnType("date");
         });
+        builder.OwnsOne(progress => progress.Approval, approval =>
+        {
+            approval.Property(p => p.ApprenticeshipId).HasColumnName("ApprovalId");
+            approval.Property(p => p.ContinuationId).HasColumnName("ApprovalContinuationId");
+        });
         builder.Property(x => x.ProgressData)
             .HasConversion<JsonValueConverter<KsbTaxonomy>>();
     }
