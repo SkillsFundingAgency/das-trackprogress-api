@@ -26,9 +26,7 @@ public class TrackSimpleProgress : ApiFixture
                 progress.ApprovalId,
                 ProgressData = new
                 {
-                    progress.Knowledges,
-                    progress.Skills,
-                    progress.Behaviours,
+                    progress.Ksbs,
                 },
             });
         });
