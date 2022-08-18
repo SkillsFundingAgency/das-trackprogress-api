@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.TrackProgress.Api;
 using SFA.DAS.TrackProgress.Api.AppStart;
@@ -28,6 +29,7 @@ builder.Services.AddDbContext<TrackProgressContext>(options =>
     options.UseSqlServer(config.ApplicationSettings.DbConnectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddMediatR(typeof(TrackProgressContext));
+builder.Services.AddTrackProgressHealthChecks();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -42,6 +44,8 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseHealthChecks();
 
 app.Run();
 
