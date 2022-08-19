@@ -9,11 +9,11 @@ public class Progress
         ProgressData = null!;
     }
 
-    public Progress(ApprenticeshipId apprenticeship, ApprovalId approval, KsbTaxonomy knowledges)
+    public Progress(ApprenticeshipId apprenticeship, ApprovalId approval, KsbTaxonomy ksbs)
     {
         Apprenticeship = apprenticeship;
         Approval = approval;
-        ProgressData = knowledges;
+        ProgressData = ksbs;
     }
 
     public long Id { get; private set; }
