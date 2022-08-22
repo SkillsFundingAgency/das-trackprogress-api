@@ -17,8 +17,8 @@ public class TrackProgressController : ControllerBase
 
     [HttpPost("{ukprn}/{uln}/{startDate}/progress")]
     public async Task AddProgress(
-        [Range(1, double.MaxValue, ErrorMessage = "UKPRN must be greater than zero.")] long ukprn,
-        [Range(1, double.MaxValue, ErrorMessage = "ULN must be greater than zero.")] long uln,
+        [Range(1, long.MaxValue, ErrorMessage = "UKPRN must be greater than zero.")] long ukprn,
+        [Range(1, long.MaxValue, ErrorMessage = "ULN must be greater than zero.")] long uln,
         DateOnly startDate, KsbProgress progress)
     {
         await mediator.Send(new RecordApprenticeshipProgress(new ApprenticeshipId(ukprn, uln, startDate), progress));
