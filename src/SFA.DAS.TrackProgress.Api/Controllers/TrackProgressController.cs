@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations;
 namespace SFA.DAS.TrackProgressApi.Controllers;
 
 [ApiController]
-[Route("/apprenticeship")]
+[Route("/apprenticeships")]
 public class TrackProgressController : ControllerBase
 {
     private readonly IMediator mediator;
@@ -23,4 +23,12 @@ public class TrackProgressController : ControllerBase
     {
         await mediator.Send(new RecordApprenticeshipProgress(new ApprenticeshipId(ukprn, uln, startDate), progress));
     }
+
+    [HttpPost("{apprenticeshipId}")]
+    public async Task AddProgress(long apprenticeshipId, KsbProgress progress)
+    {
+        await mediator.Send(new RecordApprenticeshipProgress(new ApprenticeshipId(ukprn, uln, startDate), progress));
+    }
+
+
 }
