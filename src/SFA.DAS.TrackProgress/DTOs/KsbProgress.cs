@@ -8,4 +8,3 @@ public class ProgressDto
     public long? ApprenticeshipContinuationId { get; set; }
     public ProgressItem[] Ksbs { get; set; } = null!;
 }
-
