@@ -9,19 +9,18 @@ public class ConfigureProgress : IEntityTypeConfiguration<Progress>
     public void Configure(EntityTypeBuilder<Progress> builder)
     {
         builder.HasKey(x => x.Id);
-        builder.OwnsOne(progress => progress.Apprenticeship, apprenticeship =>
+        builder.OwnsOne(progress => progress.ProviderApprenticeshipIdentifier, apprenticeship =>
         {
-            apprenticeship.Property(p => p.Ukprn).HasColumnName(nameof(ApprenticeshipId.Ukprn));
-            apprenticeship.Property(p => p.Uln).HasColumnName(nameof(ApprenticeshipId.Uln));
+            apprenticeship.Property(p => p.ProviderId).HasColumnName(nameof(ProviderApprenticeshipIdentifier.ProviderId));
+            apprenticeship.Property(p => p.Uln).HasColumnName(nameof(ProviderApprenticeshipIdentifier.Uln));
             apprenticeship.Property(p => p.StartDate)
-                .HasColumnName(nameof(ApprenticeshipId.StartDate))
-                .HasConversion<DateOnlyConverter>()
-                .HasColumnType("date");
+                .HasColumnName(nameof(ProviderApprenticeshipIdentifier.StartDate))
+                .HasColumnType("datetime");
         });
         builder.OwnsOne(progress => progress.Approval, approval =>
         {
-            approval.Property(p => p.ApprenticeshipId).HasColumnName("ApprovalId");
-            approval.Property(p => p.ContinuationId).HasColumnName("ApprovalContinuationId");
+            approval.Property(p => p.ApprenticeshipId).HasColumnName(nameof(ApprovalId.ApprenticeshipId));
+            approval.Property(p => p.ApprenticeshipContinuationId).HasColumnName(nameof(ApprovalId.ApprenticeshipContinuationId));
         });
         builder.Property(x => x.ProgressData)
             .HasConversion<JsonValueConverter<KsbTaxonomy>>();

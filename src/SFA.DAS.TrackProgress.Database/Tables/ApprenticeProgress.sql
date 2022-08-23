@@ -1,11 +1,11 @@
 ﻿CREATE TABLE [Progress]
 (
     [Id] bigint NOT NULL IDENTITY,
-    [Ukprn] bigint NOT NULL,
+    [ProviderId] bigint NOT NULL,
     [Uln] bigint NOT NULL,
-    [StartDate] date NOT NULL,
-    [ApprovalId] bigint NOT NULL,
-    [ApprovalContinuationId] bigint NULL,
+    [StartDate] DATETIME2 NOT NULL,
+    [ApprenticeshipId] bigint NOT NULL,
+    [ApprenticeshipContinuationId] bigint NULL,
     [ProgressDataVersion] bigint NOT NULL,
     [ProgressData] nvarchar(max) NOT NULL,
 	[CreatedOn] datetime2 NOT NULL DEFAULT current_timestamp, 
@@ -15,7 +15,7 @@ GO
 
 CREATE NONCLUSTERED INDEX [IX_Progress_UKPRN_ULN_StartDate] ON [Progress]
 (
-	[Ukprn] ASC,
+	[ProviderId] ASC,
 	[Uln] ASC,
 	[StartDate] ASC
 )

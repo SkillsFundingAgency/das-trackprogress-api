@@ -4,45 +4,21 @@ public class Progress
 {
     private Progress()
     {
-        Apprenticeship = null!;
+        ProviderApprenticeshipIdentifier = null!;
         Approval = null!;
         ProgressData = null!;
     }
 
-    public Progress(ApprenticeshipId apprenticeship, ApprovalId approval, KsbTaxonomy ksbs)
+    public Progress(ProviderApprenticeshipIdentifier apprenticeship, ApprovalId approval, KsbTaxonomy ksbs)
     {
-        Apprenticeship = apprenticeship;
+        ProviderApprenticeshipIdentifier = apprenticeship;
         Approval = approval;
         ProgressData = ksbs;
     }
 
     public long Id { get; private set; }
-    public ApprenticeshipId Apprenticeship { get; private set; }
+    public ProviderApprenticeshipIdentifier ProviderApprenticeshipIdentifier { get; private set; }
     public ApprovalId Approval { get; private set; }
     public long ProgressDataVersion { get; private set; } = 1;
     public KsbTaxonomy ProgressData { get; private set; }
 }
-
-
-//public class ApprenticeshipProgress
-//{
-//    private ApprenticeshipProgress()
-//    {
-//        Apprenticeship = null!;
-//        Approval = null!;
-//        ProgressData = null!;
-//    }
-
-//    public ApprenticeshipProgress(ApprenticeshipId apprenticeship, ApprovalId approval, KsbTaxonomy ksbs)
-//    {
-//        Apprenticeship = apprenticeship;
-//        Approval = approval;
-//        ProgressData = ksbs;
-//    }
-
-//    public long Id { get; private set; }
-//    public ApprenticeshipId Apprenticeship { get; private set; }
-//    public ApprovalId Approval { get; private set; }
-//    public long ProgressDataVersion { get; private set; } = 1;
-//    public KsbTaxonomy ProgressData { get; private set; }
-//}

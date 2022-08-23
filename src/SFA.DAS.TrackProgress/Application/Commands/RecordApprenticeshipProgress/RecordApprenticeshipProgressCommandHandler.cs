@@ -17,10 +17,10 @@ public class RecordApprenticeshipProgressCommandHandler : IRequestHandler<Record
     {
         context.Progress.Add(
             new Progress(
-                request..Apprenticeship,
+                request.Progress.ProviderApprenticeshipIdentifier,
                 new ApprovalId(
-                    request.Progress.ApprovalId,
-                    request.Progress.ApprovalContinuationId),
+                    request.ApprenticeshipId,
+                    request.Progress.ApprenticeshipContinuationId),
                 new KsbTaxonomy(
                     ToDomainTaxonomy(request.Progress.Ksbs))));
 
