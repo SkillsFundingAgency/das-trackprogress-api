@@ -21,7 +21,7 @@ public class TrackSimpleProgressTests : ApiFixture
         };
 
         var response = await client.PostAsJsonAsync($"/apprenticeships/{apprenticeshipId}", progress);
-        response.Should().Be200Ok();
+        response.Should().Be201Created();
 
         await VerifyDatabase(db =>
         {
