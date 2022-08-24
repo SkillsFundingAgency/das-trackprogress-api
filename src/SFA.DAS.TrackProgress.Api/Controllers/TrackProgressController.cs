@@ -15,18 +15,9 @@ public class TrackProgressController : ControllerBase
     public TrackProgressController(IMediator mediator) => this.mediator = mediator;
 
     [HttpPost("{apprenticeshipId}")]
-    [Authorize]
     public async Task<IActionResult> AddProgress(long apprenticeshipId, ProgressDto progress)
     {
         await mediator.Send(new RecordApprenticeshipProgressCommand(apprenticeshipId, progress));
         return new StatusCodeResult(StatusCodes.Status201Created);
     }
-
-    [HttpGet("{apprenticeshipId}")]
-    [Authorize]
-    public IActionResult GetProgress(long apprenticeshipId, ProgressDto progress)
-    {
-        return Ok();
-    }
-
 }

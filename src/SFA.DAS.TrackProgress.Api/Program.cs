@@ -1,5 +1,5 @@
 using MediatR;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.TrackProgress.Api;
 using SFA.DAS.TrackProgress.Api.AppStart;
@@ -12,7 +12,14 @@ builder.AddConfiguration();
 var config = builder.Configuration.Get<TrackProgressConfiguration>();
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers(o =>
+    {
+        if (!builder.Configuration.IsLocalAcceptanceOrDev())
+        {
+            o.Filters.Add(new AuthorizeFilter(PolicyNames.Default));
+        }
+    }
+);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c => c.UseMonthYearTypeConverter());
 builder.Services.Configure<RouteOptions>(options =>
