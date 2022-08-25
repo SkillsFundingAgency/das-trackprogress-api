@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Configuration.AzureTableStorage;
@@ -31,6 +32,7 @@ configuration = config.Build();
 
 var appConfig = configuration.Get<TrackProgressConfiguration>();
 
+builder.Services.AddApplicationInsightsTelemetry();
 // Add services to the container.
 builder.Services.AddControllers(o =>
     {
