@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
+using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.TrackProgress.Api;
 using SFA.DAS.TrackProgress.Api.AppStart;
 using SFA.DAS.TrackProgress.Api.Configuration;
@@ -9,7 +10,26 @@ using SFA.DAS.TrackProgress.Database;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddConfiguration();
-var config = builder.Configuration.Get<TrackProgressConfiguration>();
+IConfiguration configuration = builder.Configuration;
+var config = new ConfigurationBuilder()
+    .AddConfiguration(configuration)
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddEnvironmentVariables();
+
+if (!configuration.IsAcceptanceOrDev())
+{
+    config.AddAzureTableStorage(options =>
+    {
+        options.ConfigurationKeys = configuration["ConfigNames"].Split(",");
+        options.StorageConnectionString = configuration["ConfigurationStorageConnectionString"];
+        options.EnvironmentName = configuration["EnvironmentName"];
+        options.PreFixConfigurationKeys = false;
+    });
+}
+
+configuration = config.Build();
+
+var appConfig = configuration.Get<TrackProgressConfiguration>();
 
 // Add services to the container.
 builder.Services.AddControllers(o =>
@@ -20,6 +40,7 @@ builder.Services.AddControllers(o =>
         }
     }
 );
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c => c.UseMonthYearTypeConverter());
 builder.Services.Configure<RouteOptions>(options =>
@@ -31,9 +52,9 @@ builder.Services
     .AddControllers(options => options.UseMonthYearTypeConverter())
     .AddJsonOptions(options => options.UseMonthYearTypeConverter())
     ;
-builder.Services.AddApiAuthentication(config.AzureAd);
+builder.Services.AddApiAuthentication(appConfig.AzureAd);
 builder.Services.AddDbContext<TrackProgressContext>(options =>
-    options.UseSqlServer(config.ApplicationSettings.DbConnectionString));
+    options.UseSqlServer(appConfig.ApplicationSettings.DbConnectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddMediatR(typeof(TrackProgressContext));
 builder.Services.AddTrackProgressHealthChecks();
