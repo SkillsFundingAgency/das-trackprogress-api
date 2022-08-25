@@ -16,7 +16,7 @@ builder.Services.AddControllers(o =>
     {
         if (!builder.Configuration.IsLocalAcceptanceOrDev())
         {
-            o.Filters.Add(new AuthorizeFilter(PolicyNames.Default));
+            //o.Filters.Add(new AuthorizeFilter(PolicyNames.Default));
         }
     }
 );

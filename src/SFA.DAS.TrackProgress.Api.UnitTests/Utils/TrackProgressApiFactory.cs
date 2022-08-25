@@ -3,9 +3,10 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using SFA.DAS.TrackProgress.Api.Tests.Utils;
 using SFA.DAS.TrackProgress.Database;
 
-namespace SFA.DAS.TrackProgress.Api.Tests.Utils;
+namespace SFA.DAS.TrackProgress.Api.UnitTests.Utils;
 
 public class TrackProgressApiFactory : WebApplicationFactory<Program>
 {
@@ -15,6 +16,7 @@ public class TrackProgressApiFactory : WebApplicationFactory<Program>
         {
             UseInMemoryDatabase(services);
         });
+        builder.UseEnvironment("LOCAL_ACCEPTANCE_TESTS");
     }
 
     private static void UseInMemoryDatabase(IServiceCollection services)
