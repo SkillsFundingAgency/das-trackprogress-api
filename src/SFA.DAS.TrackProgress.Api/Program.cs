@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.TrackProgress.Api;
 using SFA.DAS.TrackProgress.Api.AppStart;
@@ -10,7 +11,7 @@ using SFA.DAS.TrackProgress.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.AddConfiguration();
+//builder.AddConfiguration();
 IConfiguration configuration = builder.Configuration;
 var config = new ConfigurationBuilder()
     .AddConfiguration(configuration)
@@ -33,16 +34,10 @@ configuration = config.Build();
 var appConfig = configuration.Get<TrackProgressConfiguration>();
 
 builder.Services.AddApplicationInsightsTelemetry();
-// Add services to the container.
-builder.Services.AddControllers(o =>
-    {
-        if (!builder.Configuration.IsLocalAcceptanceOrDev())
-        {
-            o.Filters.Add(new AuthorizeFilter(PolicyNames.Default));
-        }
-    }
-);
 
+builder.Services.Configure<AzureActiveDirectoryConfiguration>(configuration.GetSection("AzureAd"));
+builder.Services.AddSingleton(cfg => cfg.GetRequiredService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
+// Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c => c.UseMonthYearTypeConverter());
 builder.Services.Configure<RouteOptions>(options =>
@@ -55,6 +50,17 @@ builder.Services
     .AddJsonOptions(options => options.UseMonthYearTypeConverter())
     ;
 builder.Services.AddApiAuthentication(appConfig.AzureAd);
+
+builder.Services.AddControllers(o =>
+    {
+        //if (!builder.Configuration.IsLocalAcceptanceOrDev())
+        {
+            //o.Filters.Add(new AuthorizeFilter(PolicyNames.Default));
+        }
+    }
+);
+
+
 builder.Services.AddDbContext<TrackProgressContext>(options =>
     options.UseSqlServer(appConfig.ApplicationSettings.DbConnectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
