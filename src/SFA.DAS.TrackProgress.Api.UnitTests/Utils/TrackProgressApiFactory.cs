@@ -12,16 +12,19 @@ public class TrackProgressApiFactory : WebApplicationFactory<Program>
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        builder.UseSetting("EnvironmentName", "ACCEPTANCE_TESTS");
+
         builder.ConfigureTestServices(services =>
         {
             UseInMemoryDatabase(services);
+            
         });
-        builder.UseEnvironment("LOCAL_ACCEPTANCE_TESTS");
+        builder.UseEnvironment("Development");
     }
 
     private static void UseInMemoryDatabase(IServiceCollection services)
     {
-        services.Remove<DbContextOptions<TrackProgressContext>>();
+        //services.Remove<DbContextOptions<TrackProgressContext>>();
         services.AddDbContext<TrackProgressContext>(options => options.UseInMemoryDatabase("db"));
     }
 }

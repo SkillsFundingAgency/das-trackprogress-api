@@ -11,25 +11,25 @@ using SFA.DAS.TrackProgress.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//builder.AddConfiguration();
+builder.AddConfiguration();
 IConfiguration configuration = builder.Configuration;
-var config = new ConfigurationBuilder()
-    .AddConfiguration(configuration)
-    .SetBasePath(Directory.GetCurrentDirectory())
-    .AddEnvironmentVariables();
+//var config = new ConfigurationBuilder()
+//    .AddConfiguration(configuration)
+//    .SetBasePath(Directory.GetCurrentDirectory())
+//    .AddEnvironmentVariables();
 
-if (!configuration.IsAcceptanceOrDev())
-{
-    config.AddAzureTableStorage(options =>
-    {
-        options.ConfigurationKeys = configuration["ConfigNames"].Split(",");
-        options.StorageConnectionString = configuration["ConfigurationStorageConnectionString"];
-        options.EnvironmentName = configuration["EnvironmentName"];
-        options.PreFixConfigurationKeys = false;
-    });
-}
+//if (!configuration.IsAcceptanceOrDev())
+//{
+//    config.AddAzureTableStorage(options =>
+//    {
+//        options.ConfigurationKeys = configuration["ConfigNames"].Split(",");
+//        options.StorageConnectionString = configuration["ConfigurationStorageConnectionString"];
+//        options.EnvironmentName = configuration["EnvironmentName"];
+//        options.PreFixConfigurationKeys = false;
+//    });
+//}
 
-configuration = config.Build();
+//configuration = config.Build();
 
 var appConfig = configuration.Get<TrackProgressConfiguration>();
 
@@ -37,6 +37,7 @@ builder.Services.AddApplicationInsightsTelemetry();
 
 builder.Services.Configure<AzureActiveDirectoryConfiguration>(configuration.GetSection("AzureAd"));
 builder.Services.AddSingleton(cfg => cfg.GetRequiredService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
+
 // Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c => c.UseMonthYearTypeConverter());
@@ -53,16 +54,16 @@ builder.Services.AddApiAuthentication(appConfig.AzureAd);
 
 builder.Services.AddControllers(o =>
     {
-        //if (!builder.Configuration.IsLocalAcceptanceOrDev())
+        if (!builder.Configuration.IsLocalAcceptanceOrDev())
         {
             //o.Filters.Add(new AuthorizeFilter(PolicyNames.Default));
         }
     }
 );
 
+if(!configuration.IsAcceptanceTest())
+    builder.Services.AddEntityFrameworkForTrackProgress(appConfig.ApplicationSettings.DbConnectionString);
 
-builder.Services.AddDbContext<TrackProgressContext>(options =>
-    options.UseSqlServer(appConfig.ApplicationSettings.DbConnectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddMediatR(typeof(TrackProgressContext));
 builder.Services.AddTrackProgressHealthChecks();
