@@ -1,9 +1,6 @@
 using MediatR;
-using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.TrackProgress.Api;
 using SFA.DAS.TrackProgress.Api.AppStart;
 using SFA.DAS.TrackProgress.Api.Configuration;
@@ -13,23 +10,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddConfiguration();
 IConfiguration configuration = builder.Configuration;
-//var config = new ConfigurationBuilder()
-//    .AddConfiguration(configuration)
-//    .SetBasePath(Directory.GetCurrentDirectory())
-//    .AddEnvironmentVariables();
-
-//if (!configuration.IsAcceptanceOrDev())
-//{
-//    config.AddAzureTableStorage(options =>
-//    {
-//        options.ConfigurationKeys = configuration["ConfigNames"].Split(",");
-//        options.StorageConnectionString = configuration["ConfigurationStorageConnectionString"];
-//        options.EnvironmentName = configuration["EnvironmentName"];
-//        options.PreFixConfigurationKeys = false;
-//    });
-//}
-
-//configuration = config.Build();
 
 var appConfig = configuration.Get<TrackProgressConfiguration>();
 
@@ -56,7 +36,7 @@ builder.Services.AddControllers(o =>
     {
         if (!builder.Configuration.IsLocalAcceptanceOrDev())
         {
-            //o.Filters.Add(new AuthorizeFilter(PolicyNames.Default));
+            o.Filters.Add(new AuthorizeFilter(PolicyNames.Default));
         }
     }
 );
