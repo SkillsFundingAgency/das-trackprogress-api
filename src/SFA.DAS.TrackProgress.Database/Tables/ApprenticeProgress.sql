@@ -4,8 +4,8 @@
     [ProviderId] bigint NOT NULL,
     [Uln] bigint NOT NULL,
     [StartDate] DATETIME2 NOT NULL,
-    [ApprenticeshipId] bigint NOT NULL,
-    [ApprenticeshipContinuationId] bigint NULL,
+    [CommitmentsApprenticeshipId] bigint NOT NULL,
+    [CommitmentsContinuationId] bigint NULL,
     [ProgressDataVersion] SMALLINT NOT NULL,
     [ProgressData] nvarchar(max) NOT NULL,
 	[CreatedOn] datetime2 NOT NULL DEFAULT current_timestamp, 
@@ -23,5 +23,5 @@ GO
 
 CREATE NONCLUSTERED INDEX [IX_Progress_ApprenticeshipId] ON [Progress]
 (
-	[ApprenticeshipId] ASC
+	[CommitmentsApprenticeshipId] ASC
 )

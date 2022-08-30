@@ -28,4 +28,18 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="ProviderId" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="71b030e9-8707-4363-b883-3ec51efdc4b2" ChangeDateTime="08/30/2022 09:48:27">
+    <Property Name="ElementName" Value="[dbo].[Progress].[ApprenticeshipId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Progress]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[CommitmentsApprenticeshipId]" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="7a7af8b1-ff18-45d8-8448-e47cde48c7cd" ChangeDateTime="08/30/2022 09:48:46">
+    <Property Name="ElementName" Value="[dbo].[Progress].[ApprenticeshipContinuationId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Progress]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[CommitmentsContinuationId]" />
+  </Operation>
 </Operations>

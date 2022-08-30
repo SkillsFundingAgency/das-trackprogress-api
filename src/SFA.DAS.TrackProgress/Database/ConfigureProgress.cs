@@ -19,8 +19,8 @@ public class ConfigureProgress : IEntityTypeConfiguration<Progress>
         });
         builder.OwnsOne(progress => progress.Approval, approval =>
         {
-            approval.Property(p => p.ApprenticeshipId).HasColumnName(nameof(ApprovalId.ApprenticeshipId));
-            approval.Property(p => p.ApprenticeshipContinuationId).HasColumnName(nameof(ApprovalId.ApprenticeshipContinuationId));
+            approval.Property(p => p.ApprenticeshipId).HasColumnName("CommitmentsApprenticeshipId");
+            approval.Property(p => p.ApprenticeshipContinuationId).HasColumnName("CommitmentsContinuationId");
         });
         builder.Property(x => x.ProgressData)
             .HasConversion<JsonValueConverter<KsbTaxonomy>>();
