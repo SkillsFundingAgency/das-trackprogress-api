@@ -5,7 +5,13 @@ using SFA.DAS.TrackProgress.Models;
 
 namespace SFA.DAS.TrackProgress.Application.Commands.RecordApprenticeshipProgress;
 
-public record RecordApprenticeshipProgressCommand(long ApprenticeshipId, ProgressDto Progress) : IRequest;
+public record RecordApprenticeshipProgressCommand(
+    long ProviderId,
+    long Uln,
+    DateTime StartDate,
+    long CommitmentsApprenticeshipId,
+    long? CommitmentsContinuationId,
+    ProgressItem[] Ksbs) : IRequest;
 
 public class RecordApprenticeshipProgressCommandHandler : IRequestHandler<RecordApprenticeshipProgressCommand>
 {
@@ -19,12 +25,15 @@ public class RecordApprenticeshipProgressCommandHandler : IRequestHandler<Record
     {
         context.Progress.Add(
             new Progress(
-                request.Progress.ProviderApprenticeshipIdentifier,
+                new ProviderApprenticeshipIdentifier(
+                    request.ProviderId,
+                    request.Uln,
+                    request.StartDate),
                 new ApprovalId(
-                    request.ApprenticeshipId,
-                    request.Progress.ApprenticeshipContinuationId),
+                    request.CommitmentsApprenticeshipId,
+                    request.CommitmentsContinuationId),
                 new KsbTaxonomy(
-                    ToDomainTaxonomy(request.Progress.Ksbs))));
+                    ToDomainTaxonomy(request.Ksbs))));
 
         await context.SaveChangesAsync(cancellationToken);
 

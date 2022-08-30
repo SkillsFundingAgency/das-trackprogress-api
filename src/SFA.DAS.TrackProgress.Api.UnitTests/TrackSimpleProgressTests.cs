@@ -1,10 +1,10 @@
-﻿using System.Net.Http.Json;
-using AutoFixture;
+﻿using AutoFixture;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using SFA.DAS.TrackProgress.Api.Tests;
+using SFA.DAS.TrackProgress.Application.Commands.RecordApprenticeshipProgress;
 using SFA.DAS.TrackProgress.DTOs;
-using SFA.DAS.TrackProgress.Models;
+using System.Net.Http.Json;
 
 namespace SFA.DAS.TrackProgress.Api.UnitTests;
 
@@ -13,14 +13,16 @@ public class TrackSimpleProgressTests : ApiFixture
     [Test, AutoData]
     public async Task Save_progress_to_database(long apprenticeshipId)
     {
-        var progress = new ProgressDto
-        {
-            ProviderApprenticeshipIdentifier = new ProviderApprenticeshipIdentifier(1099, 1234567, new DateTime(2022, 09, 01)),
-            ApprenticeshipContinuationId = 1111,
-            Ksbs = fixture.CreateMany<ProgressItem>().ToArray()
-        };
+        var progress = new RecordApprenticeshipProgressCommand(
+            ProviderId: 1099,
+            Uln: 1234567,
+            StartDate: new DateTime(2022, 09, 01),
+            CommitmentsApprenticeshipId: apprenticeshipId,
+            CommitmentsContinuationId: 1111,
+            Ksbs: fixture.CreateMany<ProgressItem>().ToArray()
+        );
 
-        var response = await client.PostAsJsonAsync($"/apprenticeships/{apprenticeshipId}", progress);
+        var response = await client.PostAsJsonAsync($"/progress", progress);
         response.Should().Be201Created();
 
         await VerifyDatabase(db =>
@@ -29,14 +31,14 @@ public class TrackSimpleProgressTests : ApiFixture
             {
                 ProviderApprenticeshipIdentifier = new
                 {
-                    progress.ProviderApprenticeshipIdentifier.ProviderId,
-                    progress.ProviderApprenticeshipIdentifier.Uln,
-                    progress.ProviderApprenticeshipIdentifier.StartDate
+                    progress.ProviderId,
+                    progress.Uln,
+                    progress.StartDate,
                 },
                 Approval = new
                 {
                     ApprenticeshipId = apprenticeshipId,
-                    progress.ApprenticeshipContinuationId,
+                    ApprenticeshipContinuationId = progress.CommitmentsContinuationId,
                 },
                 ProgressData = new
                 {
