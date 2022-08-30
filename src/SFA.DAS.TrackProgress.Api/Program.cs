@@ -26,20 +26,17 @@ builder.Services.Configure<RouteOptions>(options =>
     options.LowercaseUrls = true;
     options.LowercaseQueryStrings = true;
 });
-builder.Services
-    .AddControllers(options => options.UseMonthYearTypeConverter())
-    .AddJsonOptions(options => options.UseMonthYearTypeConverter())
-    ;
-builder.Services.AddApiAuthentication(appConfig.AzureAd);
 
-builder.Services.AddControllers(o =>
+builder.Services.AddApiAuthentication(appConfig.AzureAd);
+builder.Services
+    .AddControllers(options =>
     {
+        options.UseMonthYearTypeConverter();
         if (!builder.Configuration.IsLocalAcceptanceOrDev())
         {
-            o.Filters.Add(new AuthorizeFilter(PolicyNames.Default));
+            options.Filters.Add(new AuthorizeFilter(PolicyNames.Default));
         }
-    }
-);
+    }).AddJsonOptions(options => options.UseMonthYearTypeConverter());
 
 if(!configuration.IsAcceptanceTest())
     builder.Services.AddEntityFrameworkForTrackProgress(appConfig.ApplicationSettings.DbConnectionString);
@@ -49,21 +46,14 @@ builder.Services.AddMediatR(typeof(TrackProgressContext));
 builder.Services.AddTrackProgressHealthChecks();
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
+app.UseHttpsRedirection()
+    .UseAuthentication();
 
 app.MapControllers();
-
 app.UseHealthChecks();
-
 app.Run();
 
 public partial class Program
