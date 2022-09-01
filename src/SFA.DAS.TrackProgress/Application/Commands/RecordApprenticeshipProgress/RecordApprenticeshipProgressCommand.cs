@@ -11,35 +11,40 @@ public record RecordApprenticeshipProgressCommand(
     DateTime StartDate,
     long CommitmentsApprenticeshipId,
     long? CommitmentsContinuationId,
-    ProgressItem[] Ksbs) : IRequest;
+    ProgressItem[] Ksbs) : IRequest<RecordApprenticeshipProgressResponse>;
 
-public class RecordApprenticeshipProgressCommandHandler : IRequestHandler<RecordApprenticeshipProgressCommand>
+public class RecordApprenticeshipProgressCommandHandler : IRequestHandler<RecordApprenticeshipProgressCommand, RecordApprenticeshipProgressResponse>
 {
     private readonly TrackProgressContext context;
 
     public RecordApprenticeshipProgressCommandHandler(TrackProgressContext context)
         => this.context = context;
 
-    public async Task<Unit> Handle(
+    public async Task<RecordApprenticeshipProgressResponse> Handle(
         RecordApprenticeshipProgressCommand request, CancellationToken cancellationToken)
     {
-        context.Progress.Add(
-            new Progress(
-                new ProviderApprenticeshipIdentifier(
-                    request.ProviderId,
-                    request.Uln,
-                    request.StartDate),
-                new ApprovalId(
-                    request.CommitmentsApprenticeshipId,
-                    request.CommitmentsContinuationId),
-                new KsbTaxonomy(
-                    ToDomainTaxonomy(request.Ksbs))));
+        var progress = new Progress(
+            new ProviderApprenticeshipIdentifier(
+                request.ProviderId,
+                request.Uln,
+                request.StartDate),
+            new ApprovalId(
+                request.CommitmentsApprenticeshipId,
+                request.CommitmentsContinuationId),
+            new KsbTaxonomy(
+                ToDomainTaxonomy(request.Ksbs)));
+
+        context.Progress.Add(progress);
 
         await context.SaveChangesAsync(cancellationToken);
 
-        return Unit.Value;
+        return new RecordApprenticeshipProgressResponse(progress.Id);
     }
 
     private static KsbTaxonomyItem[] ToDomainTaxonomy(ProgressItem[] dto)
         => dto.Select(x => new KsbTaxonomyItem(x.Id, x.Value)).ToArray();
 }
+
+public record RecordApprenticeshipProgressResponse(
+    long ProgressId
+);

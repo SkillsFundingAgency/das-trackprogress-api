@@ -15,7 +15,7 @@ public class TrackProgressController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AddProgress(RecordApprenticeshipProgressCommand progress)
     {
-        await mediator.Send(progress);
-        return new StatusCodeResult(StatusCodes.Status201Created);
+        var response = await mediator.Send(progress);
+        return Created("", response);
     }
 }

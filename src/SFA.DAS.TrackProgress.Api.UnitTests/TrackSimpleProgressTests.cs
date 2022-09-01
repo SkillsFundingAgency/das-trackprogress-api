@@ -5,6 +5,7 @@ using SFA.DAS.TrackProgress.Api.Tests;
 using SFA.DAS.TrackProgress.Application.Commands.RecordApprenticeshipProgress;
 using SFA.DAS.TrackProgress.DTOs;
 using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace SFA.DAS.TrackProgress.Api.UnitTests;
 
@@ -24,6 +25,8 @@ public class TrackSimpleProgressTests : ApiFixture
 
         var response = await client.PostAsJsonAsync($"/progress", progress);
         response.Should().Be201Created();
+        var content = await response.Content.ReadAsStringAsync();
+        content.Should().Contain("progressId");
 
         await VerifyDatabase(db =>
         {
