@@ -117,7 +117,7 @@ stages:
   variables:
   - group: PROD Management Resources
   - group: PROD Shared Resources
-  - group: PROD das-trackprogress-api #PLACEHOLDER
+  - group: PROD das-trackprogress-api
   jobs:
   - template: pipeline-templates/job/deploy.yml
     parameters:
