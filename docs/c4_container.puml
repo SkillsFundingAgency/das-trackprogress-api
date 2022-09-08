@@ -1,0 +1,26 @@
+@startuml C4_Elements
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+!include <office/Servers/database_server>
+!include <office/Servers/file_server>
+!include <office/Servers/application_server>
+!include <office/Concepts/service_application>
+!include <office/Concepts/firewall>
+
+Person_Ext(user, "Extnernal API user")
+
+  System_Boundary(SystemTrackProgress, "Track Progress External API") {       
+    Container(TPInner, "TrackProgress InnerAPI", "HTTP API", "API access to progress tracking data")  
+    Container_Ext(TPOuter, "TrackProgress ExternalOuterAPI", "APIM hosted API", "API allowing providers to submit progress for portable flexi-job apprenticeships")  
+    ContainerDb(TPdb, "TrackProgressDb", "SQL Azure", "Track progress data store")      
+  }
+
+  System_Boundary(SystemCommitments, "Commitments") {
+    Container_Ext(Commitments, "Commitments Inner API", "HTTP API", "API for the commitments product.")  
+  }
+
+  Rel_Right(user, TPOuter, "Find apprenticeship record", "JSON/HTTP")
+  Rel_Up(TPOuter, Commitments, "Find apprenticeship record", "JSON/HTTP")
+  Rel_Right(TPOuter, TPInner, "Submit progress", "JSON/HTTP")
+  Rel_Right(TPInner, TPdb, "Store progress", "EF/SQL client")
+@enduml

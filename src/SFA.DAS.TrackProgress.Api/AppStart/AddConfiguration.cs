@@ -44,6 +44,7 @@ public static class AddConfigurationExtensions
         }
         catch
         {
+            // when running locally we may not be using the storgage configuration
         }
     }
 
