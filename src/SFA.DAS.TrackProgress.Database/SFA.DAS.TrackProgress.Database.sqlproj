@@ -57,11 +57,21 @@
   <ItemGroup>
     <Folder Include="Properties" />
     <Folder Include="Tables" />
+    <Folder Include="Schemas" />
+    <Folder Include="PostDeployment" />
+    <Folder Include="Views" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\ApprenticeProgress.sql" />
+    <Build Include="Views\DashboardReporting.Progress.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="SFA.DAS.TrackProgress.Database.refactorlog" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="Schemas\DashboardReporting.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PostDeployment\PostDeployment.sql" />
   </ItemGroup>
 </Project>
