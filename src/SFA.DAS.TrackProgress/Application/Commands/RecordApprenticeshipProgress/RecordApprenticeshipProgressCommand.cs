@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SFA.DAS.TrackProgress.Database;
 using SFA.DAS.TrackProgress.DTOs;
+using SFA.DAS.TrackProgress.Infrastructure;
 using SFA.DAS.TrackProgress.Models;
 
 namespace SFA.DAS.TrackProgress.Application.Commands.RecordApprenticeshipProgress;
@@ -11,7 +12,7 @@ public record RecordApprenticeshipProgressCommand(
     DateTime StartDate,
     long CommitmentsApprenticeshipId,
     long? CommitmentsContinuationId,
-    ProgressItem[] Ksbs) : IRequest<RecordApprenticeshipProgressResponse>;
+    ProgressItem[] Ksbs) : IRequiresTransaction, IRequest<RecordApprenticeshipProgressResponse>;
 
 public class RecordApprenticeshipProgressCommandHandler : IRequestHandler<RecordApprenticeshipProgressCommand, RecordApprenticeshipProgressResponse>
 {
