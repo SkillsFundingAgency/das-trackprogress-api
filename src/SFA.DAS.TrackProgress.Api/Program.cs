@@ -5,6 +5,7 @@ using SFA.DAS.TrackProgress.Api;
 using SFA.DAS.TrackProgress.Api.AppStart;
 using SFA.DAS.TrackProgress.Api.Configuration;
 using SFA.DAS.TrackProgress.Database;
+using SFA.DAS.TrackProgress.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,6 +44,9 @@ if(!configuration.IsAcceptanceTest())
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddMediatR(typeof(TrackProgressContext));
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingPipelineBehavior<,>));
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionPipelineBehavior<,>));
+
 builder.Services.AddTrackProgressHealthChecks();
 var app = builder.Build();
 
