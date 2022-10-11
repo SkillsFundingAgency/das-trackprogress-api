@@ -17,6 +17,11 @@
   <ItemGroup>
     <PackageReference Include="MediatR" Version="10.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.7" />
+    <PackageReference Include="SFA.DAS.NServiceBus" Version="17.0.49" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.TrackProgress.Messages\SFA.DAS.TrackProgress.Messages.csproj" />
   </ItemGroup>
 
 </Project>

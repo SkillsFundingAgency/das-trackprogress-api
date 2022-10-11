@@ -1,6 +1,8 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Options;
+using NServiceBus.ObjectBuilder.MSDependencyInjection;
+using SFA.DAS.NServiceBus.Configuration.MicrosoftDependencyInjection;
 using SFA.DAS.TrackProgress.Api;
 using SFA.DAS.TrackProgress.Api.AppStart;
 using SFA.DAS.TrackProgress.Api.Configuration;
@@ -8,6 +10,11 @@ using SFA.DAS.TrackProgress.Database;
 using SFA.DAS.TrackProgress.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
+
+//When sharing NSB between applications
+//LearningTransportLocal.SetFolder(@"c:\scratch\.learningtransport");
+
+builder.Host.UseNServiceBusContainer();
 
 builder.AddConfiguration();
 IConfiguration configuration = builder.Configuration;
@@ -45,9 +52,17 @@ if(!configuration.IsAcceptanceTest())
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddMediatR(typeof(TrackProgressContext));
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingPipelineBehavior<,>));
-builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionPipelineBehavior<,>));
+if (!configuration.IsAcceptanceTest())
+    builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionPipelineBehavior<,>));
 
 builder.Services.AddTrackProgressHealthChecks();
+
+builder.Host.ConfigureContainer<UpdateableServiceProvider>(sp =>
+{
+    if (!configuration.IsAcceptanceTest())
+        sp.StartNServiceBus(configuration).GetAwaiter().GetResult();
+});
+
 var app = builder.Build();
 
 app.UseSwagger();
