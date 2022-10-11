@@ -15,14 +15,14 @@ public class LoggingPipelineBehavior<TRequest, TResponse> : IPipelineBehavior<TR
     {
         try
         {
-            _logger.LogInformation($"Start handling '{typeof(TRequest)}'");
+            _logger.LogInformation("Start handling '{type}'", typeof(TRequest));
             var response = await next();
-            _logger.LogInformation($"End handling '{typeof(TRequest)}'");
+            _logger.LogInformation("End handling '{type}'", typeof(TRequest));
             return response;
         }
         catch (Exception e)
         {
-            _logger.LogError(e, $"Error handling '{typeof(TRequest)}'");
+            _logger.LogError(e, "Error handling '{type}'", typeof(TRequest));
             throw;
         }
     }
