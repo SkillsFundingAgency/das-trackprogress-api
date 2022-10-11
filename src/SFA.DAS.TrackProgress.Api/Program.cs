@@ -47,7 +47,17 @@ builder.Services.AddMediatR(typeof(TrackProgressContext));
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingPipelineBehavior<,>));
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionPipelineBehavior<,>));
 
+
 builder.Services.AddTrackProgressHealthChecks();
+
+//AutoSubscribeToQueues.CreateQueuesWithReflection(
+//        configuration,
+//        connectionStringName: "AzureWebJobsServiceBus")
+//    .GetAwaiter().GetResult();
+
+
+builder.Host.UseServiceBus(configuration);
+
 var app = builder.Build();
 
 app.UseSwagger();
@@ -58,7 +68,32 @@ app.UseHttpsRedirection()
 
 app.MapControllers();
 app.UseHealthChecks();
+
 app.Run();
 
 public partial class Program
-{ }
+{
+
+    //public static IHostBuilder CreateHostBuilder(string[] args) =>
+    //    Host.CreateDefaultBuilder(args)
+    //        .UseNServiceBus(context =>
+    //        {
+    //            var endpointConfiguration = new EndpointConfiguration("Sample.FrontEnd");
+    //            endpointConfiguration.SendOnly();
+
+    //            var transport = endpointConfiguration.UseTransport<LearningTransport>();
+    //            transport.Routing().RouteToEndpoint(typeof(SomeMessage), "Sample.BackEnd");
+
+    //            return endpointConfiguration;
+    //        })
+    //        .ConfigureWebHostDefaults(webBuilder =>
+    //        {
+    //            webBuilder.UseStartup<Startup>();
+    //        })
+    //;
+
+
+
+}
+
+

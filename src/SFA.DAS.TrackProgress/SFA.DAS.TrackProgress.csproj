@@ -17,6 +17,17 @@
   <ItemGroup>
     <PackageReference Include="MediatR" Version="10.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.7" />
+    <PackageReference Include="NServiceBus" Version="7.8.0" />
+    <PackageReference Include="NServiceBus.Newtonsoft.Json" Version="2.4.0" />
+    <PackageReference Include="NServiceBus.Transport.AzureServiceBus" Version="2.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.TrackProgress.Messages\SFA.DAS.TrackProgress.Messages.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Infrastructure\NServiceBus\" />
   </ItemGroup>
 
 </Project>
