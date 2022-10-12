@@ -11,9 +11,6 @@ using SFA.DAS.TrackProgress.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//When sharing NSB between applications
-//LearningTransportLocal.SetFolder(@"c:\scratch\.learningtransport");
-
 builder.Host.UseNServiceBusContainer();
 
 builder.AddConfiguration();

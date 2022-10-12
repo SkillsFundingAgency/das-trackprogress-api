@@ -50,7 +50,6 @@ public class TrackSimpleProgressTests : ApiFixture
         var content = await response.Content.ReadAsStringAsync();
         content.Should().Contain("progressId");
 
-        EventsProvider.Should().HaveCount(1);
         EventsProvider.Should().ContainEquivalentOf(new { CommitmentsApprenticeshipId = apprenticeshipId }); ;
     }
 
