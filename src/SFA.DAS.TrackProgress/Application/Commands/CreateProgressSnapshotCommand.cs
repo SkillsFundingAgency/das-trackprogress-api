@@ -20,13 +20,18 @@ public class CreateProgressSnapshotCommandHandler : IRequestHandler<CreateProgre
             .OrderBy(x => x.CreatedOn)
             .ToListAsync(cancellationToken);
 
-        var es = events.SelectMany(x => x.ProgressData.Ksbs);
-        var m = es.Select(x => new SnapshotDetail(x.Id, x.Value)).ToList() ?? new();
+        var allKsbSubmissions = events
+            .SelectMany(x => x.ProgressData.Ksbs)
+            .GroupBy(x => x.Id);
 
-        var g = m.GroupBy(x => x.KsbId);
-        var h = g.Select(x => x.Last()).ToList();
+        var latestKsbSubmissions = allKsbSubmissions
+            .Select(x => x.Last());
 
-        var entity = new Snapshot(new ApprovalId(request.CommitmentsApprenticeshipId, null), h);
+        var allSnapshotDetails = latestKsbSubmissions
+            .Select(x => new SnapshotDetail(x.Id, x.Value))
+            .ToList();
+
+        var entity = new Snapshot(new ApprovalId(request.CommitmentsApprenticeshipId, null), allSnapshotDetails);
 
         _context.Snapshot.Add(entity);
         await _context.SaveChangesAsync(cancellationToken);
