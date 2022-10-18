@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Formats.Asn1;
 using AutoFixture;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.TrackProgress.Api.UnitTests.Utils;
@@ -23,10 +24,21 @@ public class ApiFixture
     }
 
     [SetUp]
-    public void Setup()
+    public async Task Setup()
     {
         EventsProvider = new ConcurrentBag<object>();
         Fixture = new Fixture();
+        await ResetDatabase();
+    }
+
+    private async Task ResetDatabase()
+    {
+        await ExecuteDbContextAsync(db =>
+        {
+            db.Progress.RemoveRange(db.Progress);
+            db.Snapshot.RemoveRange(db.Snapshot);
+            return db.SaveChangesAsync();
+        });
     }
 
     protected async Task ExecuteScopeAsync(Func<IServiceProvider, Task> action)
