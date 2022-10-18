@@ -1,5 +1,7 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using SFA.DAS.TrackProgress.Database;
+using SFA.DAS.TrackProgress.Models;
 
 namespace SFA.DAS.TrackProgress.Application.Commands;
 
@@ -13,8 +15,18 @@ public class CreateProgressSnapshotCommandHandler : IRequestHandler<CreateProgre
 
     public async Task<Unit> Handle(CreateProgressSnapshotCommand request, CancellationToken cancellationToken)
     {
-        _context.Snapshot.Add(new Models.Snapshot(new Models.ApprovalId(request.CommitmentsApprenticeshipId, null)));
+        var events = await _context.Progress
+            .Where(x => x.Approval.ApprenticeshipId == request.CommitmentsApprenticeshipId)
+            .ToListAsync(cancellationToken);
+
+        var e = events.FirstOrDefault()?.ProgressData;
+        var m = e?.Ksbs.Select(x => new SnapshotDetail(x.Id, x.Value)).ToList() ?? new();
+
+        var entity = new Snapshot(new ApprovalId(request.CommitmentsApprenticeshipId, null), m);
+
+        _context.Snapshot.Add(entity);
         await _context.SaveChangesAsync(cancellationToken);
+
         return Unit.Value;
     }
 }

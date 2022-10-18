@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="SFA.DAS.TrackProgress.Api.Tests.v3.ncrunchproject" />
+    <None Remove="SFA.DAS.TrackProgress.Api.UnitTests.v3.ncrunchproject" />
   </ItemGroup>
 
   <ItemGroup>

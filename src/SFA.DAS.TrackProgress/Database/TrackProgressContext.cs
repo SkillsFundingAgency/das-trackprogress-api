@@ -16,5 +16,6 @@ public class TrackProgressContext : DbContext
     {
         modelBuilder.ApplyConfiguration(new ConfigureProgress());
         modelBuilder.ApplyConfiguration(new ConfigureSnapshot());
+        modelBuilder.ApplyConfiguration(new ConfigureSnapshotDetail());
     }
 }
