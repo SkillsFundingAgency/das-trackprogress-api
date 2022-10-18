@@ -1,5 +1,4 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 
 namespace SFA.DAS.TrackProgress.Api.UnitTests;
@@ -9,17 +8,19 @@ public class SnapshotTests : ApiFixture
     [Test]
     public async Task Save_progress_to_database_1()
     {
+        // Given
         await ExecuteDbContextAsync(db =>
         {
-            db.Progress.Add(new Models.Progress(
-                new Models.ProviderApprenticeshipIdentifier(1, 1, DateTime.MinValue),
-                new Models.ApprovalId(1, null),
-                new Models.KsbTaxonomy(new[] { new Models.KsbTaxonomyItem("12", 88) })));
+            db.Progress.Add(Some.Progress
+                .ForApprenticeship(1)
+                .WithKsbs((Id: "12", Value: 88)));
             return db.SaveChangesAsync();
         });
 
+        // When
         var response = await Client.PostAsync("/apprenticeship/1/snapshot", null);
 
+        // Then
         await VerifyDatabase(db =>
         {
             db.Snapshot.Should().ContainEquivalentOf(new
@@ -28,25 +29,26 @@ public class SnapshotTests : ApiFixture
             });
         });
     }
-    
+
     [Test]
     public async Task Save_progres_from_single_event()
     {
+        // Given
         await ExecuteDbContextAsync(db =>
         {
-            db.Progress.Add(new Models.Progress(
-                new Models.ProviderApprenticeshipIdentifier(1, 1, DateTime.MinValue),
-                new Models.ApprovalId(1, null),
-                new Models.KsbTaxonomy(new[]
-                {
-                    new Models.KsbTaxonomyItem("12", 88),
-                    new Models.KsbTaxonomyItem("14", 44),
-                })));
+            db.Progress.Add(Some.Progress
+                .ForApprenticeship(1)
+                .WithKsbs(
+                    (Id: "12", Value: 88),
+                    (Id: "14", Value: 44))
+                );
             return db.SaveChangesAsync();
         });
 
+        // When
         var response = await Client.PostAsync("/apprenticeship/1/snapshot", null);
 
+        // Then
         await VerifyDatabase(db =>
         {
             db.Snapshot.Include(x => x.Details).Should().ContainEquivalentOf(new
@@ -60,33 +62,32 @@ public class SnapshotTests : ApiFixture
             });
         });
     }
-    
+
     [Test]
     public async Task Save_progres_from_two_events_without_overlap()
     {
+        // Given
         await ExecuteDbContextAsync(db =>
         {
-            db.Progress.Add(new Models.Progress(
-                new Models.ProviderApprenticeshipIdentifier(1, 1, DateTime.MinValue),
-                new Models.ApprovalId(1, null),
-                new Models.KsbTaxonomy(new[]
-                {
-                    new Models.KsbTaxonomyItem("12", 88),
-                    new Models.KsbTaxonomyItem("14", 44),
-                })));
-            db.Progress.Add(new Models.Progress(
-                new Models.ProviderApprenticeshipIdentifier(1, 1, DateTime.MinValue),
-                new Models.ApprovalId(1, null),
-                new Models.KsbTaxonomy(new[]
-                {
-                    new Models.KsbTaxonomyItem("13", 33),
-                    new Models.KsbTaxonomyItem("15", 55),
-                })));
+            db.Progress.Add(Some.Progress
+                .ForApprenticeship(1)
+                .WithKsbs(
+                    (Id: "12", Value: 88),
+                    (Id: "14", Value: 44)));
+
+            db.Progress.Add(Some.Progress
+                .ForApprenticeship(1)
+                .WithKsbs(
+                    (Id: "13", Value: 33),
+                    (Id: "15", Value: 55)));
+
             return db.SaveChangesAsync();
         });
 
+        // When
         var response = await Client.PostAsync("/apprenticeship/1/snapshot", null);
 
+        // Then
         await VerifyDatabase(db =>
         {
             db.Snapshot.Include(x => x.Details).Should().ContainEquivalentOf(new
@@ -106,33 +107,30 @@ public class SnapshotTests : ApiFixture
     [Test]
     public async Task Save_progres_from_two_overlapping_events()
     {
+        // Given
         await ExecuteDbContextAsync(db =>
         {
-            db.Progress.Add(Models.Progress.CreateWithDate(
-                new Models.ProviderApprenticeshipIdentifier(1, 1, DateTime.MinValue),
-                new Models.ApprovalId(1, null),
-                new Models.KsbTaxonomy(new[]
-                {
-                    new Models.KsbTaxonomyItem("12", 88),
-                    new Models.KsbTaxonomyItem("14", 44),
-                }),
-                DateOnly.FromDateTime(DateTime.Now.AddDays(-1))));
-            
-            db.Progress.Add(Models.Progress.CreateWithDate(
-                new Models.ProviderApprenticeshipIdentifier(1, 1, DateTime.MinValue),
-                new Models.ApprovalId(1, null),
-                new Models.KsbTaxonomy(new[]
-                {
-                    new Models.KsbTaxonomyItem("12", 99),
-                    new Models.KsbTaxonomyItem("15", 55),
-                }),
-                DateOnly.FromDateTime(DateTime.Now)));
+            db.Progress.Add(Some.Progress
+                .ForApprenticeship(1)
+                .WithKsbs(
+                    (Id: "12", Value: 88),
+                    (Id: "14", Value: 44))
+                .SubmittedOn(DateTime.Now.AddDays(-1)));
+
+            db.Progress.Add(Some.Progress
+                .ForApprenticeship(1)
+                .WithKsbs(
+                    (Id: "12", Value: 99),
+                    (Id: "15", Value: 55))
+                .SubmittedOn(DateTime.Now));
 
             return db.SaveChangesAsync();
         });
 
+        // When
         var response = await Client.PostAsync("/apprenticeship/1/snapshot", null);
 
+        // Then
         await VerifyDatabase(db =>
         {
             db.Snapshot.Include(x => x.Details).Should().ContainEquivalentOf(new
@@ -151,33 +149,30 @@ public class SnapshotTests : ApiFixture
     [Test]
     public async Task Save_progres_from_two_overlapping_events_inverted_order()
     {
+        // Given
         await ExecuteDbContextAsync(db =>
         {
-            db.Progress.Add(Models.Progress.CreateWithDate(
-                new Models.ProviderApprenticeshipIdentifier(1, 1, DateTime.MinValue),
-                new Models.ApprovalId(1, null),
-                new Models.KsbTaxonomy(new[]
-                {
-                    new Models.KsbTaxonomyItem("12", 99),
-                    new Models.KsbTaxonomyItem("15", 55),
-                }),
-                DateOnly.FromDateTime(DateTime.Now)));
+            db.Progress.Add(Some.Progress
+                .ForApprenticeship(1)
+                .WithKsbs(
+                    (Id: "12", Value: 99),
+                    (Id: "15", Value: 55))
+                .SubmittedOn(DateTime.Now));
 
-            db.Progress.Add(Models.Progress.CreateWithDate(
-                new Models.ProviderApprenticeshipIdentifier(1, 1, DateTime.MinValue),
-                new Models.ApprovalId(1, null),
-                new Models.KsbTaxonomy(new[]
-                {
-                    new Models.KsbTaxonomyItem("12", 88),
-                    new Models.KsbTaxonomyItem("14", 44),
-                }),
-                DateOnly.FromDateTime(DateTime.Now.AddDays(-1))));
+            db.Progress.Add(Some.Progress
+                .ForApprenticeship(1)
+                .WithKsbs(
+                    (Id: "12", Value: 88),
+                    (Id: "14", Value: 44))
+                .SubmittedOn(DateTime.Now.AddDays(-1)));
 
             return db.SaveChangesAsync();
         });
 
+        // When
         var response = await Client.PostAsync("/apprenticeship/1/snapshot", null);
 
+        // Then
         await VerifyDatabase(db =>
         {
             db.Snapshot.Include(x => x.Details).Should().ContainEquivalentOf(new
