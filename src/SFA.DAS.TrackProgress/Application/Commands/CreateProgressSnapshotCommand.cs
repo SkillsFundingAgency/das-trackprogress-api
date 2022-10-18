@@ -15,8 +15,23 @@ public class CreateProgressSnapshotCommandHandler : IRequestHandler<CreateProgre
 
     public async Task<Unit> Handle(CreateProgressSnapshotCommand request, CancellationToken cancellationToken)
     {
-        var events = await _context.Progress
-            .Where(x => x.Approval.ApprenticeshipId == request.CommitmentsApprenticeshipId)
+        var entity = await BuildSnapshot(
+            request.CommitmentsApprenticeshipId, _context.Progress, cancellationToken);
+
+        _context.Snapshot.Add(entity);
+
+        await _context.SaveChangesAsync(cancellationToken);
+
+        return Unit.Value;
+    }
+
+    private static async Task<Snapshot> BuildSnapshot(
+        long commitmentsApprenticeshipId,
+        IQueryable<Progress> progress,
+        CancellationToken cancellationToken)
+    {
+        var events = await progress
+            .Where(x => x.Approval.ApprenticeshipId == commitmentsApprenticeshipId)
             .OrderBy(x => x.CreatedOn)
             .ToListAsync(cancellationToken);
 
@@ -31,11 +46,9 @@ public class CreateProgressSnapshotCommandHandler : IRequestHandler<CreateProgre
             .Select(x => new SnapshotDetail(x.Id, x.Value))
             .ToList();
 
-        var entity = new Snapshot(new ApprovalId(request.CommitmentsApprenticeshipId, null), allSnapshotDetails);
+        var approval = new ApprovalId(commitmentsApprenticeshipId, null);
+        var entity = new Snapshot(approval, allSnapshotDetails);
 
-        _context.Snapshot.Add(entity);
-        await _context.SaveChangesAsync(cancellationToken);
-
-        return Unit.Value;
+        return entity;
     }
 }

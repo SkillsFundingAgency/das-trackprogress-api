@@ -6,32 +6,7 @@ namespace SFA.DAS.TrackProgress.Api.UnitTests;
 public class SnapshotTests : ApiFixture
 {
     [Test]
-    public async Task Save_progress_to_database_1()
-    {
-        // Given
-        await ExecuteDbContextAsync(db =>
-        {
-            db.Progress.Add(Some.Progress
-                .ForApprenticeship(1)
-                .WithKsbs((Id: "12", Value: 88)));
-            return db.SaveChangesAsync();
-        });
-
-        // When
-        var response = await Client.PostAsync("/apprenticeship/1/snapshot", null);
-
-        // Then
-        await VerifyDatabase(db =>
-        {
-            db.Snapshot.Should().ContainEquivalentOf(new
-            {
-                Approval = new { ApprenticeshipId = 1 },
-            });
-        });
-    }
-
-    [Test]
-    public async Task Save_progres_from_single_event()
+    public async Task Save_progress_from_single_event()
     {
         // Given
         await ExecuteDbContextAsync(db =>
@@ -64,7 +39,7 @@ public class SnapshotTests : ApiFixture
     }
 
     [Test]
-    public async Task Save_progres_from_two_events_without_overlap()
+    public async Task Save_progress_from_two_events_without_overlap()
     {
         // Given
         await ExecuteDbContextAsync(db =>
@@ -105,7 +80,7 @@ public class SnapshotTests : ApiFixture
     }
 
     [Test]
-    public async Task Save_progres_from_two_overlapping_events()
+    public async Task Save_progress_from_two_overlapping_events()
     {
         // Given
         await ExecuteDbContextAsync(db =>
@@ -147,7 +122,7 @@ public class SnapshotTests : ApiFixture
     }
 
     [Test]
-    public async Task Save_progres_from_two_overlapping_events_inverted_order()
+    public async Task Save_progress_from_two_overlapping_events_inverted_order()
     {
         // Given
         await ExecuteDbContextAsync(db =>
