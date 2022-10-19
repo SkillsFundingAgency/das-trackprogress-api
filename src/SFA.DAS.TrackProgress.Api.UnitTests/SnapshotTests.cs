@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NServiceBus.Testing;
 
 namespace SFA.DAS.TrackProgress.Api.UnitTests;
 
@@ -185,10 +186,13 @@ public class SnapshotTests : ApiFixture
         var response = await Client.PostAsync("/apprenticeship/1/snapshot", null);
 
         // Then
-        EventsProvider.Should().ContainEquivalentOf(new
+        Messages.PublishedMessages.Should().ContainEquivalentOf(new
         {
-            CommitmentsApprenticeshipId = 1,
-            StandardUid = "Cinematography_1.1",
+            Message = new
+            {
+                CommitmentsApprenticeshipId = 1,
+                StandardUid = "Cinematography_1.1",
+            }
         });
     }
 }

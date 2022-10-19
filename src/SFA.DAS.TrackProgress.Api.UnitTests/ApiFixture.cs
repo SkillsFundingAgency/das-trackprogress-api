@@ -1,7 +1,6 @@
-﻿using System.Collections.Concurrent;
-using System.Formats.Asn1;
-using AutoFixture;
+﻿using AutoFixture;
 using Microsoft.Extensions.DependencyInjection;
+using NServiceBus.Testing;
 using SFA.DAS.TrackProgress.Api.UnitTests.Utils;
 using SFA.DAS.TrackProgress.Database;
 
@@ -11,14 +10,14 @@ public class ApiFixture
 {
     private TrackProgressApiFactory _factory = null!;
     private IServiceScopeFactory _scopeFactory;
-    private protected Fixture Fixture = null!;
-    private protected HttpClient Client = null!;
-    private protected ConcurrentBag<object> EventsProvider = null!;
+    protected Fixture Fixture = null!;
+    protected HttpClient Client = null!;
+    protected TestableMessageSession Messages = null!;
 
     [OneTimeSetUp]
     public void OneTimeSetup()
     {
-        _factory = new TrackProgressApiFactory(() => EventsProvider);
+        _factory = new(() => Messages);
         _scopeFactory = _factory.Services.GetRequiredService<IServiceScopeFactory>();
         Client = _factory.CreateClient();
     }
@@ -26,8 +25,8 @@ public class ApiFixture
     [SetUp]
     public async Task Setup()
     {
-        EventsProvider = new ConcurrentBag<object>();
-        Fixture = new Fixture();
+        Fixture = new();
+        Messages = new();
         await ResetDatabase();
     }
 
