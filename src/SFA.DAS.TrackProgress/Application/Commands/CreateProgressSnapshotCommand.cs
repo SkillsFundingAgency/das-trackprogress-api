@@ -28,7 +28,7 @@ public class CreateProgressSnapshotCommandHandler : IRequestHandler<CreateProgre
         _context.Snapshot.Add(snapshot.Progress);
         await _context.SaveChangesAsync(cancellationToken);
 
-        await _messageSession.Publish(new CacheKsbsCommand
+        await _messageSession.Send(new CacheKsbsCommand
         {
             CommitmentsApprenticeshipId = request.CommitmentsApprenticeshipId,
             StandardUid = snapshot.StandardUid,

@@ -186,7 +186,7 @@ public class SnapshotTests : ApiFixture
         var response = await Client.PostAsync("/apprenticeship/1/snapshot", null);
 
         // Then
-        Messages.PublishedMessages.Should().ContainEquivalentOf(new
+        Messages.SentMessages.Should().ContainEquivalentOf(new
         {
             Message = new
             {

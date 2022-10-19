@@ -1,10 +1,12 @@
 ﻿using NServiceBus;
+using NServiceBus.Logging;
 using NServiceBus.ObjectBuilder.MSDependencyInjection;
 using SFA.DAS.NServiceBus.Configuration;
 using SFA.DAS.NServiceBus.Configuration.AzureServiceBus;
 using SFA.DAS.NServiceBus.Configuration.NewtonsoftJsonSerializer;
 using SFA.DAS.NServiceBus.Hosting;
-using SFA.DAS.TrackProgress.Messages.Events;
+using SFA.DAS.TrackProgress.Messages.Commands;
+using LogLevel = NServiceBus.Logging.LogLevel;
 
 namespace SFA.DAS.TrackProgress.Api.AppStart;
 
@@ -12,17 +14,27 @@ public static class NServiceBusExtensions
 {
     public static async Task<UpdateableServiceProvider> StartNServiceBus(this UpdateableServiceProvider serviceProvider, IConfiguration configuration)
     {
+        if(configuration.IsLocalAcceptanceOrDev())
+        {
+            var defaultFactory = LogManager.Use<DefaultFactory>();
+            defaultFactory.Level(LogLevel.Debug);
+        }
+
         var endpointConfiguration = new EndpointConfiguration("SFA.DAS.TrackProgress")
             .UseMessageConventions()
             .UseNewtonsoftJsonSerializer();
 
         if (configuration.UseLearningTransport())
         {
-            endpointConfiguration.UseTransport<LearningTransport>().StorageDirectory(LearningTransportLocal.Folder());
+            var transportExtensions = endpointConfiguration.UseTransport<LearningTransport>();
+            transportExtensions.StorageDirectory(LearningTransportLocal.Folder());
+            transportExtensions.Routing().AddRouting();
         }
         else
         {
-            endpointConfiguration.UseAzureServiceBusTransport(configuration.NServiceBusConnectionString(), r => r.AddRouting());
+            endpointConfiguration.UseAzureServiceBusTransport(
+                configuration.NServiceBusConnectionString(),
+                r => r.AddRouting());
         }
 
         if (!string.IsNullOrEmpty(configuration.NServiceBusLicense()))
@@ -44,13 +56,13 @@ public static class RoutingSettingsExtensions
 {
     public static void AddRouting(this RoutingSettings settings)
     {
-        settings.RouteToEndpoint(typeof(NewProgressAddedEvent), QueueNames.NewProgressAdded);
+        settings.RouteToEndpoint(typeof(CacheKsbsCommand), QueueNames.NewProgressAdded);
     }
 }
 
 public static class QueueNames
 {
-    public const string NewProgressAdded = "sfa-das-trackprogress-newprogress-added";
+    public const string NewProgressAdded = "sfa-das-trackprogress";
 }
 
 public static class LearningTransportLocal
