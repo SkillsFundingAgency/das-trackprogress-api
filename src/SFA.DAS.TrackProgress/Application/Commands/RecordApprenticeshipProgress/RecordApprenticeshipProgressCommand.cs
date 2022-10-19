@@ -14,7 +14,9 @@ public record RecordApprenticeshipProgressCommand(
     DateTime StartDate,
     long CommitmentsApprenticeshipId,
     long? CommitmentsContinuationId,
-    ProgressItem[] Ksbs) : IRequiresTransaction, IRequest<RecordApprenticeshipProgressResponse>;
+    string StandardUid,
+    ProgressItem[] Ksbs
+    ) : IRequiresTransaction, IRequest<RecordApprenticeshipProgressResponse>;
 
 public class RecordApprenticeshipProgressCommandHandler : IRequestHandler<RecordApprenticeshipProgressCommand, RecordApprenticeshipProgressResponse>
 {
@@ -38,6 +40,7 @@ public class RecordApprenticeshipProgressCommandHandler : IRequestHandler<Record
             new ApprovalId(
                 request.CommitmentsApprenticeshipId,
                 request.CommitmentsContinuationId),
+            request.StandardUid,
             new KsbTaxonomy(
                 ToDomainTaxonomy(request.Ksbs)));
 

@@ -34,6 +34,7 @@ public record ProgressBuilder
         return Progress.CreateWithDate(
             new ProviderApprenticeshipIdentifier(builder.ProviderId, 1, DateTime.MinValue),
             new ApprovalId(builder.CommitmentsApprenticeshipId, null),
+            "STD_2.2",
             new KsbTaxonomy(builder.Ksbs.Select(ksb => new KsbTaxonomyItem(ksb.Id, ksb.Value)).ToArray()),
             builder.CreatedOn);
     }

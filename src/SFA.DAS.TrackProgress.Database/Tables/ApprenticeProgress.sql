@@ -9,6 +9,7 @@
     [ProgressDataVersion] SMALLINT NOT NULL,
     [ProgressData] nvarchar(max) NOT NULL,
 	[CreatedOn] datetime2 NOT NULL DEFAULT current_timestamp, 
+    [StandardUid] NVARCHAR(50) NOT NULL, 
     CONSTRAINT [PK_Progress] PRIMARY KEY ([Id])
 );
 GO

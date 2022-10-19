@@ -34,6 +34,7 @@ public class TrackSimpleProgressTests : ApiFixture
                     ApprenticeshipId = apprenticeshipId,
                     ApprenticeshipContinuationId = progress.CommitmentsContinuationId,
                 },
+                progress.StandardUid,
                 ProgressData = new
                 {
                     progress.Ksbs,
@@ -58,6 +59,7 @@ public class TrackSimpleProgressTests : ApiFixture
             StartDate: new DateTime(2022, 09, 01),
             CommitmentsApprenticeshipId: apprenticeshipId,
             CommitmentsContinuationId: 1111,
+            StandardUid: "STD_1.1",
             Ksbs: Fixture.CreateMany<ProgressItem>().ToArray()
         );
     }
