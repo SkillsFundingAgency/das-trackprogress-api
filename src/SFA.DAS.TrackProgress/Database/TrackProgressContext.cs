@@ -20,4 +20,10 @@ public class TrackProgressContext : DbContext
         modelBuilder.ApplyConfiguration(new ConfigureSnapshotDetail());
         modelBuilder.ApplyConfiguration(new ConfigureKsbName());
     }
-}
+
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        configurationBuilder.Properties<DateOnly>()
+            .HaveConversion<DateOnlyConverter>()
+            .HaveColumnType("datetime2");
+    }
