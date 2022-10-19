@@ -61,7 +61,7 @@ public class FakeMessageSession : IMessageSession
         await Task.CompletedTask;
     }
 
-    public async Task Publish<T>(Action<T> messageConstructor, PublishOptions publishOptions)
+    public Task Publish<T>(Action<T> messageConstructor, PublishOptions publishOptions)
     {
         throw new NotImplementedException();
     }
