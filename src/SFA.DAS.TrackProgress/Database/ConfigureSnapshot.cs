@@ -14,15 +14,5 @@ public class ConfigureSnapshot : IEntityTypeConfiguration<Snapshot>
             approval.Property(p => p.ApprenticeshipId).HasColumnName("CommitmentsApprenticeshipId");
             approval.Property(p => p.ApprenticeshipContinuationId).HasColumnName("CommitmentsContinuationId");
         });
-        //builder.HasMany(x => x.Details).WithOne();
-    }
-}
-
-public class ConfigureSnapshotDetail : IEntityTypeConfiguration<SnapshotDetail>
-{
-    public void Configure(EntityTypeBuilder<SnapshotDetail> builder)
-    {
-        builder.Property<long>("Id");
-        builder.HasKey("Id");
     }
 }

@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
+using NServiceBus;
 using SFA.DAS.TrackProgress.Database;
+using SFA.DAS.TrackProgress.Messages.Commands;
 using SFA.DAS.TrackProgress.Models;
 
 namespace SFA.DAS.TrackProgress.Application.Commands;
@@ -10,8 +12,13 @@ public record CreateProgressSnapshotCommand(long CommitmentsApprenticeshipId) : 
 public class CreateProgressSnapshotCommandHandler : IRequestHandler<CreateProgressSnapshotCommand>
 {
     private readonly TrackProgressContext _context;
+    private readonly IMessageSession _messageSession;
 
-    public CreateProgressSnapshotCommandHandler(TrackProgressContext context) => _context = context;
+    public CreateProgressSnapshotCommandHandler(TrackProgressContext context, IMessageSession messageSession)
+    {
+        _context = context;
+        _messageSession = messageSession;
+    }
 
     public async Task<Unit> Handle(CreateProgressSnapshotCommand request, CancellationToken cancellationToken)
     {
@@ -19,8 +26,12 @@ public class CreateProgressSnapshotCommandHandler : IRequestHandler<CreateProgre
             request.CommitmentsApprenticeshipId, _context.Progress, cancellationToken);
 
         _context.Snapshot.Add(entity);
-
         await _context.SaveChangesAsync(cancellationToken);
+
+        await _messageSession.Publish(new CacheKsbsCommand
+        {
+            CommitmentsApprenticeshipId = request.CommitmentsApprenticeshipId,
+        });
 
         return Unit.Value;
     }
@@ -46,7 +57,10 @@ public class CreateProgressSnapshotCommandHandler : IRequestHandler<CreateProgre
             .Select(x => new SnapshotDetail(x.Id, x.Value))
             .ToList();
 
-        var approval = new ApprovalId(commitmentsApprenticeshipId, null);
+        var approval = new ApprovalId(
+            commitmentsApprenticeshipId,
+            events.FirstOrDefault()?.Approval.ApprenticeshipContinuationId);
+
         var entity = new Snapshot(approval, allSnapshotDetails);
 
         return entity;
