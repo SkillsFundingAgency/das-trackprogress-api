@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 
 namespace SFA.DAS.TrackProgress.Api.UnitTests;
@@ -24,6 +24,7 @@ public class SnapshotTests : ApiFixture
         var response = await Client.PostAsync("/apprenticeship/1/snapshot", null);
 
         // Then
+        response.Should().Be201Created();
         await VerifyDatabase(db =>
         {
             db.Snapshot.Include(x => x.Details).Should().ContainEquivalentOf(new

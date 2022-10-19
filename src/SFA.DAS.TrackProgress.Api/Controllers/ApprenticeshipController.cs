@@ -17,6 +17,6 @@ public class ApprenticeshipController : ControllerBase
     public async Task<IActionResult> CreateSnapshot(long commitmentsApprenticeshipId)
     {
         await _mediator.Send(new CreateProgressSnapshotCommand(commitmentsApprenticeshipId));
-        return Ok();
+        return Created("", null);
     }
 }
