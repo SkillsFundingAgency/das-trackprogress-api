@@ -22,21 +22,22 @@ public class CreateProgressSnapshotCommandHandler : IRequestHandler<CreateProgre
 
     public async Task<Unit> Handle(CreateProgressSnapshotCommand request, CancellationToken cancellationToken)
     {
-        var entity = await BuildSnapshot(
+        var snapshot = await BuildSnapshot(
             request.CommitmentsApprenticeshipId, _context.Progress, cancellationToken);
 
-        _context.Snapshot.Add(entity);
+        _context.Snapshot.Add(snapshot.Progress);
         await _context.SaveChangesAsync(cancellationToken);
 
         await _messageSession.Publish(new CacheKsbsCommand
         {
             CommitmentsApprenticeshipId = request.CommitmentsApprenticeshipId,
+            StandardUid = snapshot.StandardUid,
         });
 
         return Unit.Value;
     }
 
-    private static async Task<Snapshot> BuildSnapshot(
+    private static async Task<CourseSnapshot> BuildSnapshot(
         long commitmentsApprenticeshipId,
         IQueryable<Progress> progress,
         CancellationToken cancellationToken)
@@ -57,12 +58,16 @@ public class CreateProgressSnapshotCommandHandler : IRequestHandler<CreateProgre
             .Select(x => new SnapshotDetail(x.Id, x.Value))
             .ToList();
 
+        var progress1 = events.FirstOrDefault();
+
         var approval = new ApprovalId(
             commitmentsApprenticeshipId,
-            events.FirstOrDefault()?.Approval.ApprenticeshipContinuationId);
+            progress1?.Approval.ApprenticeshipContinuationId);
 
         var entity = new Snapshot(approval, allSnapshotDetails);
 
-        return entity;
+        return new(progress1!.StandardUid, entity);
     }
+
+    private record CourseSnapshot(string StandardUid, Snapshot Progress);
 }

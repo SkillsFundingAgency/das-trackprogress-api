@@ -172,6 +172,7 @@ public class SnapshotTests : ApiFixture
         {
             db.Progress.Add(Some.Progress
                 .ForApprenticeship(1)
+                .OnStandard("Cinematography_1.1")
                 .WithKsbs(
                     (Id: "12", Value: 99),
                     (Id: "15", Value: 55))
@@ -187,6 +188,7 @@ public class SnapshotTests : ApiFixture
         EventsProvider.Should().ContainEquivalentOf(new
         {
             CommitmentsApprenticeshipId = 1,
+            StandardUid = "Cinematography_1.1",
         });
     }
 }

@@ -16,6 +16,7 @@ public record ProgressBuilder
     public (string Id, int Value)[] Ksbs { get; private set; }
         = new[] { (_faker.Random.Guid().ToString(), _faker.Random.Int()) };
     public DateOnly CreatedOn { get; private set; } = _faker.Date.PastDateOnly();
+    public string StandardUid { get; private set; } = _faker.Name.JobTitle();
 
     internal ProgressBuilder ForApprenticeship(long caid)
         => new ProgressBuilder(this) with { CommitmentsApprenticeshipId = caid };
@@ -28,13 +29,16 @@ public record ProgressBuilder
 
     internal ProgressBuilder SubmittedOn(DateTime date)
         => new ProgressBuilder(this) with { CreatedOn = DateOnly.FromDateTime(date) };
+    
+    internal ProgressBuilder OnStandard(string standardUid)
+        => new ProgressBuilder(this) with { StandardUid = standardUid };
 
     public static implicit operator Progress(ProgressBuilder builder)
     {
         return Progress.CreateWithDate(
             new ProviderApprenticeshipIdentifier(builder.ProviderId, 1, DateTime.MinValue),
             new ApprovalId(builder.CommitmentsApprenticeshipId, null),
-            "STD_2.2",
+            builder.StandardUid,
             new KsbTaxonomy(builder.Ksbs.Select(ksb => new KsbTaxonomyItem(ksb.Id, ksb.Value)).ToArray()),
             builder.CreatedOn);
     }
