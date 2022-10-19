@@ -30,7 +30,7 @@ public class Progress
     public ProviderApprenticeshipIdentifier ProviderApprenticeshipIdentifier { get; private set; }
     public ApprovalId Approval { get; private set; }
     public string StandardUid { get; private set; }
-    public long ProgressDataVersion { get; private set; } = 1;
+    public short ProgressDataVersion { get; private set; } = 1;
     public KsbTaxonomy ProgressData { get; private set; }
     public DateOnly CreatedOn { get; private set;  }
 }
