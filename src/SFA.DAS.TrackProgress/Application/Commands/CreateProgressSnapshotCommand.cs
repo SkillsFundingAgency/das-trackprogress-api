@@ -25,18 +25,9 @@ public class CreateProgressSnapshotCommandHandler : IRequestHandler<CreateProgre
         var snapshot = await BuildSnapshot(
             request.CommitmentsApprenticeshipId, _context.Progress, cancellationToken);
 
-        _context.Snapshot.Add(snapshot.Progress);
-        await _context.SaveChangesAsync(cancellationToken);
+        await SaveSnapshot(snapshot, cancellationToken);
 
-        var ksbIds = snapshot.Progress.Details.Select(x => x.KsbId);
-        if (_context.KsbCache.Where(x => ksbIds.Contains(x.Id)).Count() != ksbIds.Count())
-        {
-            await _messageSession.Send(new CacheKsbsCommand
-            {
-                CommitmentsApprenticeshipId = request.CommitmentsApprenticeshipId,
-                StandardUid = snapshot.StandardUid,
-            });
-        }
+        await CacheKsbNames(snapshot, cancellationToken);
 
         return Unit.Value;
     }
@@ -62,16 +53,43 @@ public class CreateProgressSnapshotCommandHandler : IRequestHandler<CreateProgre
             .Select(x => new SnapshotDetail(x.Id, x.Value))
             .ToList();
 
-        var progress1 = events.FirstOrDefault();
+        var progressEvent = events.First();
 
         var approval = new ApprovalId(
             commitmentsApprenticeshipId,
-            progress1?.Approval.ApprenticeshipContinuationId);
+            progressEvent.Approval.ApprenticeshipContinuationId);
 
         var entity = new Snapshot(approval, allSnapshotDetails);
 
-        return new(progress1!.StandardUid, entity);
+        return new(progressEvent.StandardUid, entity);
     }
 
-    private record CourseSnapshot(string StandardUid, Snapshot Progress);
+    private async Task SaveSnapshot(CourseSnapshot snapshot, CancellationToken cancellationToken)
+    {
+        _context.Snapshot.Add(snapshot.Progress);
+        await _context.SaveChangesAsync(cancellationToken);
+    }
+
+    private async Task CacheKsbNames(CourseSnapshot snapshot, CancellationToken cancellationToken)
+    {
+        var ksbIds = snapshot.Progress.Details.Select(x => x.KsbId).ToList();
+
+        var numKsbsCached = await _context.KsbCache
+            .Where(x => ksbIds.Contains(x.Id))
+            .CountAsync(cancellationToken);
+
+        if (numKsbsCached != ksbIds.Count)
+            await SendCacheCommand(snapshot);
+    }
+
+    private async Task SendCacheCommand(CourseSnapshot snapshot)
+    {
+        await _messageSession.Send(new CacheKsbsCommand
+        {
+            CommitmentsApprenticeshipId = snapshot.Progress.Approval.ApprenticeshipId,
+            StandardUid = snapshot.StandardUid,
+        });
+    }
+
+    private sealed record CourseSnapshot(string StandardUid, Snapshot Progress);
 }

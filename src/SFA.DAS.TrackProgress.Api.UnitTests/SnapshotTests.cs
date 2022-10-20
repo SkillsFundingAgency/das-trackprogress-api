@@ -223,4 +223,37 @@ public class SnapshotTests : ApiFixture
         // Then
         Messages.SentMessages.Should().BeEmpty();
     }
+
+    [Test]
+    public async Task Save_progress_publishes_NewPublishedAddedEvent_when_some_KSBs_are_present()
+    {
+        // Given
+        await ExecuteDbContextAsync(db =>
+        {
+            db.Progress.Add(Some.Progress
+                .ForApprenticeship(12)
+                .OnStandard("RockClimbing_4.9")
+                .WithKsbs(
+                    (Id: "12", Value: 99),
+                    (Id: "15", Value: 55))
+                .SubmittedOn(DateTime.Now));
+
+            db.KsbCache.Add(new("15", "55"));
+
+            return db.SaveChangesAsync();
+        });
+
+        // When
+        var response = await Client.PostAsync("/apprenticeship/12/snapshot", null);
+
+        // Then
+        Messages.SentMessages.Should().ContainEquivalentOf(new
+        {
+            Message = new
+            {
+                CommitmentsApprenticeshipId = 12,
+                StandardUid = "RockClimbing_4.9",
+            }
+        });
+    }
 }
