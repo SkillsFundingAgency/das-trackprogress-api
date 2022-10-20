@@ -36,6 +36,7 @@ public class ApiFixture
         {
             db.Progress.RemoveRange(db.Progress);
             db.Snapshot.RemoveRange(db.Snapshot);
+            db.KsbCache.RemoveRange(db.KsbCache);
             return db.SaveChangesAsync();
         });
     }

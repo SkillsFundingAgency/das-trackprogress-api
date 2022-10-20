@@ -28,11 +28,15 @@ public class CreateProgressSnapshotCommandHandler : IRequestHandler<CreateProgre
         _context.Snapshot.Add(snapshot.Progress);
         await _context.SaveChangesAsync(cancellationToken);
 
-        await _messageSession.Send(new CacheKsbsCommand
+        var ksbIds = snapshot.Progress.Details.Select(x => x.KsbId);
+        if (_context.KsbCache.Where(x => ksbIds.Contains(x.Id)).Count() != ksbIds.Count())
         {
-            CommitmentsApprenticeshipId = request.CommitmentsApprenticeshipId,
-            StandardUid = snapshot.StandardUid,
-        });
+            await _messageSession.Send(new CacheKsbsCommand
+            {
+                CommitmentsApprenticeshipId = request.CommitmentsApprenticeshipId,
+                StandardUid = snapshot.StandardUid,
+            });
+        }
 
         return Unit.Value;
     }

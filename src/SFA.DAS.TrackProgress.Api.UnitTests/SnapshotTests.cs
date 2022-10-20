@@ -195,4 +195,32 @@ public class SnapshotTests : ApiFixture
             }
         });
     }
+
+    [Test]
+    public async Task Save_progress_does_not_publish_NewPublishedAddedEvent_when_KSBs_are_all_present()
+    {
+        // Given
+        await ExecuteDbContextAsync(db =>
+        {
+            db.Progress.Add(Some.Progress
+                .ForApprenticeship(1)
+                .OnStandard("Cinematography_1.1")
+                .WithKsbs(
+                    (Id: "12", Value: 99),
+                    (Id: "15", Value: 55))
+                .SubmittedOn(DateTime.Now));
+
+            db.KsbCache.AddRange(
+                new("12", "99"),
+                new("15", "55"));
+
+            return db.SaveChangesAsync();
+        });
+
+        // When
+        var response = await Client.PostAsync("/apprenticeship/1/snapshot", null);
+
+        // Then
+        Messages.SentMessages.Should().BeEmpty();
+    }
 }
