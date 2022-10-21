@@ -47,9 +47,6 @@ public class TrackSimpleProgressTests : ApiFixture
     {
         var response = await Client.PostAsJsonAsync($"/progress", CreateProgressCommand(apprenticeshipId));
         response.Should().Be201Created();
-        var content = await response.Content.ReadAsStringAsync();
-        content.Should().Contain("progressId");
-
         EventsProvider.Should().ContainEquivalentOf(new { CommitmentsApprenticeshipId = apprenticeshipId }); ;
     }
 
