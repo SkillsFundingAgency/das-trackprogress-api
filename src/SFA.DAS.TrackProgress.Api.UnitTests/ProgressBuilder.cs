@@ -5,12 +5,24 @@ namespace SFA.DAS.TrackProgress.Api.UnitTests;
 
 public static class Some
 {
-    public static ProgressBuilder Progress => new();
+    private static readonly Faker _faker = new("en");
+    private static DateOnly MostRecentSubmission = _faker.Date.PastDateOnly(yearsToGoBack: 10);
+
+    public static ProgressBuilder Progress
+    {
+        get
+        {
+            // Ensure that multiple Some.Progress are created in chronological order by default
+            MostRecentSubmission = _faker.Date.SoonDateOnly(days: 7, refDate: MostRecentSubmission.AddDays(1));
+            return new ProgressBuilder().SubmittedOn(MostRecentSubmission);
+        }
+    }
 }
 
 public record ProgressBuilder
 {
     private static readonly Faker _faker = new("en");
+
     public long ProviderId { get; private init; } = _faker.Random.Number(100, 199);
     public long CommitmentsApprenticeshipId { get; private init; } = _faker.Random.Number(200, 299);
     public (string Id, int Value)[] Ksbs { get; private set; }
@@ -28,8 +40,11 @@ public record ProgressBuilder
         => new ProgressBuilder(this) with { Ksbs = ksbs };
 
     internal ProgressBuilder SubmittedOn(DateTime date)
-        => new ProgressBuilder(this) with { CreatedOn = DateOnly.FromDateTime(date) };
-    
+        => SubmittedOn(DateOnly.FromDateTime(date));
+
+    internal ProgressBuilder SubmittedOn(DateOnly date)
+        => new ProgressBuilder(this) with { CreatedOn = date };
+
     internal ProgressBuilder OnStandard(string standardUid)
         => new ProgressBuilder(this) with { StandardUid = standardUid };
 

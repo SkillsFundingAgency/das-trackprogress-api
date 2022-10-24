@@ -7,6 +7,13 @@ namespace SFA.DAS.TrackProgress.Api.UnitTests;
 public class SnapshotTests : ApiFixture
 {
     [Test]
+    public void Some_progress_is_submitted_in_order_created_by_default()
+    {
+        var manyProgress = Enumerable.Range(1, 50).Select(x => Some.Progress);
+        manyProgress.Should().BeInAscendingOrder(p => p.CreatedOn);
+    }
+
+    [Test]
     public async Task Save_progress_from_single_event()
     {
         // Given
@@ -166,6 +173,40 @@ public class SnapshotTests : ApiFixture
     }
 
     [Test]
+    public async Task Save_progress_when_second_event_reduces_value()
+    {
+        // Given
+        await ExecuteDbContextAsync(db =>
+        {
+            db.Progress.Add(Some.Progress
+                .ForApprenticeship(1)
+                .WithKsbs((Id: "123", Value: 80)));
+
+            db.Progress.Add(Some.Progress
+                .ForApprenticeship(1)
+                .WithKsbs((Id: "123", Value: 70)));
+
+            return db.SaveChangesAsync();
+        });
+
+        // When
+        var response = await Client.PostAsync("/apprenticeship/1/snapshot", null);
+        response.EnsureSuccessStatusCode();
+
+        // Then
+        await VerifyDatabase(db =>
+        {
+            db.Snapshot.Include(x => x.Details).Should().ContainEquivalentOf(new
+            {
+                Details = new[]
+                {
+                    new { KsbId = "123", ProgressValue = 70 },
+                }
+            });
+        });
+    }
+
+    [Test]
     public async Task Save_progress_publishes_NewPublishedAddedEvent_when_KSBs_are_missing()
     {
         // Given
@@ -176,8 +217,7 @@ public class SnapshotTests : ApiFixture
                 .OnStandard("Cinematography_1.1")
                 .WithKsbs(
                     (Id: "12", Value: 99),
-                    (Id: "15", Value: 55))
-                .SubmittedOn(DateTime.Now));
+                    (Id: "15", Value: 55)));
 
             return db.SaveChangesAsync();
         });
@@ -206,8 +246,7 @@ public class SnapshotTests : ApiFixture
                 .OnStandard("Cinematography_1.1")
                 .WithKsbs(
                     (Id: "12", Value: 99),
-                    (Id: "15", Value: 55))
-                .SubmittedOn(DateTime.Now));
+                    (Id: "15", Value: 55)));
 
             db.KsbCache.AddRange(
                 new("12", "99"),
@@ -234,8 +273,7 @@ public class SnapshotTests : ApiFixture
                 .OnStandard("RockClimbing_4.9")
                 .WithKsbs(
                     (Id: "12", Value: 99),
-                    (Id: "15", Value: 55))
-                .SubmittedOn(DateTime.Now));
+                    (Id: "15", Value: 55)));
 
             db.KsbCache.Add(new("15", "55"));
 
