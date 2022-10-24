@@ -190,7 +190,6 @@ public class SnapshotTests : ApiFixture
         {
             Message = new
             {
-                CommitmentsApprenticeshipId = 1,
                 StandardUid = "Cinematography_1.1",
             }
         });
@@ -251,7 +250,6 @@ public class SnapshotTests : ApiFixture
         {
             Message = new
             {
-                CommitmentsApprenticeshipId = 12,
                 StandardUid = "RockClimbing_4.9",
             }
         });

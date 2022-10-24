@@ -86,7 +86,6 @@ public class CreateProgressSnapshotCommandHandler : IRequestHandler<CreateProgre
     {
         await _messageSession.Send(new CacheKsbsCommand
         {
-            CommitmentsApprenticeshipId = snapshot.Progress.Approval.ApprenticeshipId,
             StandardUid = snapshot.StandardUid,
         });
     }

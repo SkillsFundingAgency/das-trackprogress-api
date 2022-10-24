@@ -27,3 +27,4 @@ public class TrackProgressContext : DbContext
             .HaveConversion<DateOnlyConverter>()
             .HaveColumnType("datetime2");
     }
+}
