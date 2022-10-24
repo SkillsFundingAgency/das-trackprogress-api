@@ -1,6 +1,6 @@
 ﻿create table [dbo].[SnapshotDetail]
 (
-	[Id] bigint not null primary key identity, 
+    [Id] bigint not null primary key identity, 
     [SnapshotId] bigint not null, 
     [KsbId] uniqueidentifier not null, 
     [ProgressValue] smallint not null,
