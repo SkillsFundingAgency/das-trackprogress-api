@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using NServiceBus;
 using SFA.DAS.TrackProgress.Database;
+using SFA.DAS.TrackProgress.Infrastructure;
 using SFA.DAS.TrackProgress.Messages.Commands;
 using SFA.DAS.TrackProgress.Models;
 
@@ -9,7 +10,7 @@ namespace SFA.DAS.TrackProgress.Application.Commands;
 
 public record CreateProgressSnapshotCommand(long CommitmentsApprenticeshipId) : IRequest;
 
-public class CreateProgressSnapshotCommandHandler : IRequestHandler<CreateProgressSnapshotCommand>
+public class CreateProgressSnapshotCommandHandler : IRequestHandler<CreateProgressSnapshotCommand>, IRequiresTransaction
 {
     private readonly TrackProgressContext _context;
     private readonly IMessageSession _messageSession;
