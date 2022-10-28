@@ -5,7 +5,7 @@ using SFA.DAS.TrackProgress.Application.Commands;
 namespace SFA.DAS.TrackProgress.Api.Controllers;
 
 [ApiController]
-[Route("/apprenticeship")]
+[Route("/apprenticeships")]
 public class ApprenticeshipController : ControllerBase
 {
     private readonly IMediator _mediator;

@@ -29,7 +29,7 @@ public class SnapshotTests : ApiFixture
         });
 
         // When
-        var response = await Client.PostAsync("/apprenticeship/1/snapshot", null);
+        var response = await Client.PostAsync("/apprenticeships/1/snapshot", null);
 
         // Then
         response.Should().Be201Created();
@@ -69,7 +69,7 @@ public class SnapshotTests : ApiFixture
         });
 
         // When
-        var response = await Client.PostAsync("/apprenticeship/1/snapshot", null);
+        var response = await Client.PostAsync("/apprenticeships/1/snapshot", null);
 
         // Then
         await VerifyDatabase(db =>
@@ -112,7 +112,7 @@ public class SnapshotTests : ApiFixture
         });
 
         // When
-        var response = await Client.PostAsync("/apprenticeship/1/snapshot", null);
+        var response = await Client.PostAsync("/apprenticeships/1/snapshot", null);
 
         // Then
         await VerifyDatabase(db =>
@@ -154,7 +154,7 @@ public class SnapshotTests : ApiFixture
         });
 
         // When
-        var response = await Client.PostAsync("/apprenticeship/1/snapshot", null);
+        var response = await Client.PostAsync("/apprenticeships/1/snapshot", null);
 
         // Then
         await VerifyDatabase(db =>
@@ -190,7 +190,7 @@ public class SnapshotTests : ApiFixture
         });
 
         // When
-        var response = await Client.PostAsync("/apprenticeship/1/snapshot", null);
+        var response = await Client.PostAsync("/apprenticeships/1/snapshot", null);
         response.EnsureSuccessStatusCode();
 
         // Then
@@ -223,7 +223,7 @@ public class SnapshotTests : ApiFixture
         });
 
         // When
-        var response = await Client.PostAsync("/apprenticeship/1/snapshot", null);
+        var response = await Client.PostAsync("/apprenticeships/1/snapshot", null);
 
         // Then
         Messages.SentMessages.Should().ContainEquivalentOf(new
@@ -256,7 +256,7 @@ public class SnapshotTests : ApiFixture
         });
 
         // When
-        var response = await Client.PostAsync("/apprenticeship/1/snapshot", null);
+        var response = await Client.PostAsync("/apprenticeships/1/snapshot", null);
 
         // Then
         Messages.SentMessages.Should().BeEmpty();
@@ -281,7 +281,7 @@ public class SnapshotTests : ApiFixture
         });
 
         // When
-        var response = await Client.PostAsync("/apprenticeship/12/snapshot", null);
+        var response = await Client.PostAsync("/apprenticeships/12/snapshot", null);
 
         // Then
         Messages.SentMessages.Should().ContainEquivalentOf(new
