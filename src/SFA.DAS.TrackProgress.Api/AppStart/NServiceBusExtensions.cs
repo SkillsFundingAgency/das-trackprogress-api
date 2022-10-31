@@ -62,7 +62,7 @@ public static class RoutingSettingsExtensions
 
 public static class QueueNames
 {
-    public const string NewProgressAdded = "sfa-das-trackprogress";
+    public const string NewProgressAdded = "sfa.das.trackprogress";
 }
 
 public static class LearningTransportLocal
