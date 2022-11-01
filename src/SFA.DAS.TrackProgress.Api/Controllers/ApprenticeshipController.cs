@@ -20,20 +20,3 @@ public class ApprenticeshipController : ControllerBase
         return Created("", null);
     }
 }
-
-[ApiController]
-[Route("/courses")]
-public class CoursesController : ControllerBase
-{
-    private readonly IMediator _mediator;
-
-    public CoursesController(IMediator mediator) => _mediator = mediator;
-
-    [HttpPost]
-    [Route("ksbs")]
-    public async Task<IActionResult> CreateSnapshot(SaveKsbsCommand request)
-    {
-        await _mediator.Send(request);
-        return Created("", null);
-    }
-}
