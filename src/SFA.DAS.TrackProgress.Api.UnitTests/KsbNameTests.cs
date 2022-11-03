@@ -11,7 +11,7 @@ public class KsbNameTests : ApiFixture
         // Given
         await ExecuteDbContextAsync(db =>
         {
-            db.KsbCache.Add(new("6567f034-e675-45a8-aa27-f7b6bcb3a5a1", "original description"));
+            db.KsbCache.Add(new("6567f034-e675-45a8-aa27-f7b6bcb3a5a1", "type", "original description"));
             return db.SaveChangesAsync();
         });
 
@@ -20,8 +20,8 @@ public class KsbNameTests : ApiFixture
         {
             Ksbs = new[]
             {
-                new { Id = "3fa85f64-5717-4562-b3fc-2c963f66afa6", Description = "description" },
-                new { Id = "94b5e500-2b33-4209-86e6-8de07e9b615f", Description = "more descriptive" }
+                new { Id = "3fa85f64-5717-4562-b3fc-2c963f66afa6", Type = "type", Description = "description" },
+                new { Id = "94b5e500-2b33-4209-86e6-8de07e9b615f", Type = "skill", Description = "more descriptive" }
             }
         });
 
@@ -30,9 +30,9 @@ public class KsbNameTests : ApiFixture
         {
             db.KsbCache.Should().BeEquivalentTo(new[]
             {
-                new { Id = "6567f034-e675-45a8-aa27-f7b6bcb3a5a1", Name = "original description" },
-                new { Id = "3fa85f64-5717-4562-b3fc-2c963f66afa6", Name = "description" },
-                new { Id = "94b5e500-2b33-4209-86e6-8de07e9b615f", Name = "more descriptive" },
+                new { Id = "6567f034-e675-45a8-aa27-f7b6bcb3a5a1", Type = "type", Name = "original description" },
+                new { Id = "3fa85f64-5717-4562-b3fc-2c963f66afa6", Type = "type", Name = "description" },
+                new { Id = "94b5e500-2b33-4209-86e6-8de07e9b615f", Type = "skill", Name = "more descriptive" },
             });
         });
     }
@@ -43,7 +43,7 @@ public class KsbNameTests : ApiFixture
         // Given
         await ExecuteDbContextAsync(db =>
         {
-            db.KsbCache.Add(new("6567f034-e675-45a8-aa27-f7b6bcb3a5a1", "original"));
+            db.KsbCache.Add(new("6567f034-e675-45a8-aa27-f7b6bcb3a5a1", "behave", "original"));
             return db.SaveChangesAsync();
         });
 
@@ -52,7 +52,7 @@ public class KsbNameTests : ApiFixture
         {
             Ksbs = new[]
             {
-                new { Id = "6567f034-e675-45a8-aa27-f7b6bcb3a5a1", Description = "replacement" },
+                new { Id = "6567f034-e675-45a8-aa27-f7b6bcb3a5a1", Type = "skill", Description = "replacement" },
             }
         });
 
@@ -61,7 +61,7 @@ public class KsbNameTests : ApiFixture
         {
             db.KsbCache.Should().BeEquivalentTo(new[]
             {
-                new { Id = "6567f034-e675-45a8-aa27-f7b6bcb3a5a1", Name = "replacement" },
+                new { Id = "6567f034-e675-45a8-aa27-f7b6bcb3a5a1", Type = "skill", Name = "replacement" },
             });
         });
     }

@@ -249,8 +249,8 @@ public class SnapshotTests : ApiFixture
                     (Id: "15", Value: 55)));
 
             db.KsbCache.AddRange(
-                new("12", "99"),
-                new("15", "55"));
+                new("12", "K", "99"),
+                new("15", "K", "55"));
 
             return db.SaveChangesAsync();
         });
@@ -275,7 +275,7 @@ public class SnapshotTests : ApiFixture
                     (Id: "12", Value: 99),
                     (Id: "15", Value: 55)));
 
-            db.KsbCache.Add(new("15", "55"));
+            db.KsbCache.Add(new("15","B", "55"));
 
             return db.SaveChangesAsync();
         });

@@ -5,7 +5,7 @@ using SFA.DAS.TrackProgress.Models;
 namespace SFA.DAS.TrackProgress.Application.Commands;
 
 public record SaveKsbsCommand(Ksb[] Ksbs) : IRequest;
-public record Ksb(string Id, string Description);
+public record Ksb(string Id, string Type, string Description);
 
 public class SaveKsbsCommandHandler : IRequestHandler<SaveKsbsCommand>
 {
@@ -20,12 +20,13 @@ public class SaveKsbsCommandHandler : IRequestHandler<SaveKsbsCommand>
             var ksb = _context.KsbCache.Find(x.Id);
             if (ksb == null)
             {
-                ksb = new KsbName(x.Id.ToString(), x.Description);
+                ksb = new KsbName(x.Id.ToString(), x.Type, x.Description);
                 _context.KsbCache.Add(ksb);
             }
             else
             {
                 ksb.Name = x.Description;
+                ksb.Type = x.Type;
                 _context.KsbCache.Update(ksb);
             }
         }
