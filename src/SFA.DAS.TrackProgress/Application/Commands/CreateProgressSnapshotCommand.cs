@@ -24,7 +24,7 @@ public class CreateProgressSnapshotCommandHandler : IRequestHandler<CreateProgre
     public async Task<Unit> Handle(CreateProgressSnapshotCommand request, CancellationToken cancellationToken)
     {
         var existingSnapshot = await _context.Snapshot.FirstOrDefaultAsync(x =>
-                x.Approval.ApprenticeshipId == request.CommitmentsApprenticeshipId);
+                x.Approval.ApprenticeshipId == request.CommitmentsApprenticeshipId, cancellationToken);
         if (existingSnapshot != null)
         {
             _context.Snapshot.Remove(existingSnapshot);
