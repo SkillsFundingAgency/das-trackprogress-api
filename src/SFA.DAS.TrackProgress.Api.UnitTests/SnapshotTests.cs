@@ -292,4 +292,59 @@ public class SnapshotTests : ApiFixture
             }
         });
     }
+
+    [Test]
+    public async Task A_second_snapshot_is_created_should_delete_the_existing_snapshot()
+    {
+        // Given
+        await ExecuteDbContextAsync(db =>
+        {
+            db.Progress.Add(Some.Progress
+                .ForApprenticeship(1)
+                .WithKsbs(
+                    (Id: "12", Value: 88),
+                    (Id: "14", Value: 44))
+            );
+
+            return db.SaveChangesAsync();
+        });
+        // We generate first snapshot
+        await Client.PostAsync("/apprenticeships/1/snapshot", null);
+        // and add a new progress record
+        await ExecuteDbContextAsync(db =>
+        {
+            db.Progress.Add(Some.Progress
+                .ForApprenticeship(1)
+                .WithKsbs(
+                    (Id: "12", Value: 90),
+                    (Id: "13", Value: 10))
+            );
+
+            return db.SaveChangesAsync();
+        });
+
+        // When 
+        var response = await Client.PostAsync("/apprenticeships/1/snapshot", null);
+
+        // Then
+        response.Should().Be201Created();
+        await VerifyDatabase(db =>
+        {
+            db.Snapshot.Include(x => x.Details).Should().ContainEquivalentOf(new
+            {
+                Approval = new { ApprenticeshipId = 1 },
+                Details = new[]
+                {
+                    new { KsbId = "12", ProgressValue = 90 },
+                    new { KsbId = "13", ProgressValue = 10 },
+                    new { KsbId = "14", ProgressValue = 44 },
+                },
+            });
+        });
+
+        await VerifyDatabase(db =>
+        {
+            db.Snapshot.Count().Should().Be(1);
+        });
+    }
 }
