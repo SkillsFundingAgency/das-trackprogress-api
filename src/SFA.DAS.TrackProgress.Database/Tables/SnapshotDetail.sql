@@ -4,5 +4,5 @@
     [SnapshotId] bigint not null, 
     [KsbId] uniqueidentifier not null, 
     [ProgressValue] smallint not null,
-    constraint FK_Snapshot_SnapshotId foreign key ([SnapshotId]) references [Snapshot] ([Id]) 
+    constraint FK_Snapshot_SnapshotId foreign key ([SnapshotId]) references [Snapshot] ([Id]) ON DELETE CASCADE
 )
