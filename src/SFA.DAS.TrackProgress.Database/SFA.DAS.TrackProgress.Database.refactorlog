@@ -42,4 +42,18 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="[CommitmentsContinuationId]" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="bf62355e-a245-4721-8dc0-7b553226615d" ChangeDateTime="10/31/2022 10:50:55">
+    <Property Name="ElementName" Value="[dbo].[KsbName].[[Description]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[KsbName]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Description" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="2c2adc12-329a-4880-93fc-528b20409b4a" ChangeDateTime="10/31/2022 11:06:14">
+    <Property Name="ElementName" Value="[dbo].[KsbCache].[Description]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[KsbCache]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Name" />
+  </Operation>
 </Operations>

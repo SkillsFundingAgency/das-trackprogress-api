@@ -1,35 +1,49 @@
 ﻿using AutoFixture;
 using Microsoft.Extensions.DependencyInjection;
-using SFA.DAS.TrackProgress.Api.Tests.Utils;
+using NServiceBus.Testing;
 using SFA.DAS.TrackProgress.Api.UnitTests.Utils;
 using SFA.DAS.TrackProgress.Database;
 
-namespace SFA.DAS.TrackProgress.Api.Tests;
+namespace SFA.DAS.TrackProgress.Api.UnitTests;
 
 public class ApiFixture
 {
-    private TrackProgressApiFactory factory = null!;
-    private IServiceScopeFactory scopeFactory;
-    private protected Fixture fixture = null!;
-    private protected HttpClient client = null!;
+    private TrackProgressApiFactory _factory = null!;
+    private IServiceScopeFactory _scopeFactory;
+    protected Fixture Fixture = null!;
+    protected HttpClient Client = null!;
+    protected TestableMessageSession Messages = null!;
 
     [OneTimeSetUp]
     public void OneTimeSetup()
     {
-        factory = new TrackProgressApiFactory();
-        scopeFactory = factory.Services.GetRequiredService<IServiceScopeFactory>();
-        client = factory.CreateClient();
+        _factory = new(() => Messages);
+        _scopeFactory = _factory.Services.GetRequiredService<IServiceScopeFactory>();
+        Client = _factory.CreateClient();
     }
 
     [SetUp]
-    public void Setup()
+    public async Task Setup()
     {
-        fixture = new Fixture();
+        Fixture = new();
+        Messages = new();
+        await ResetDatabase();
+    }
+
+    private async Task ResetDatabase()
+    {
+        await ExecuteDbContextAsync(db =>
+        {
+            db.Progress.RemoveRange(db.Progress);
+            db.Snapshot.RemoveRange(db.Snapshot);
+            db.KsbCache.RemoveRange(db.KsbCache);
+            return db.SaveChangesAsync();
+        });
     }
 
     protected async Task ExecuteScopeAsync(Func<IServiceProvider, Task> action)
     {
-        using var scope = scopeFactory.CreateScope();
+        using var scope = _scopeFactory.CreateScope();
         await action(scope.ServiceProvider);
     }
 
@@ -42,5 +56,4 @@ public class ApiFixture
             action(sp.GetRequiredService<TrackProgressContext>());
             return Task.CompletedTask;
         });
-
 }

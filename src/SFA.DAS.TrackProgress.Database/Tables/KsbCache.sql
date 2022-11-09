@@ -1,0 +1,7 @@
+﻿CREATE TABLE [dbo].[KsbCache]
+(
+    [Id] UNIQUEIDENTIFIER NOT null, 
+    [Type] NVARCHAR(10) NOT NULL,
+    [Name]NVARCHAR(MAX) NOT NULL
+    CONSTRAINT [PK_KsbCache] PRIMARY KEY ([Id])
+)

@@ -24,5 +24,6 @@ public class ConfigureProgress : IEntityTypeConfiguration<Progress>
         });
         builder.Property(x => x.ProgressData)
             .HasConversion<JsonValueConverter<KsbTaxonomy>>();
+        builder.Property(x => x.CreatedOn).ValueGeneratedOnAdd();
     }
 }
