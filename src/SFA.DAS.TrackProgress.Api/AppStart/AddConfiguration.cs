@@ -7,11 +7,7 @@ public static class AddConfigurationExtensions
     public static WebApplicationBuilder AddConfiguration(this WebApplicationBuilder services)
     {
         AddAzureConfiguration(services.Configuration);
-
-#if DEBUG
         services.Configuration.AddJsonFile($"appsettings.Development.json", optional: true);
-#endif
-
         return services;
     }
 
