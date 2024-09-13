@@ -6,6 +6,8 @@ jobs:
 - job: CodeBuild
   pool:
     name: DAS - Continuous Integration Beta
+    demands:
+      - agent.os -equals Linux
     workspace:
       clean: all
   variables:
