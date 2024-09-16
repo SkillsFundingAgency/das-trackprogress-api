@@ -9,7 +9,7 @@ jobs:
   pool:
     name: DAS - Continuous Deployment Beta
     demands:
-      - agent.os -equals Windows
+      - agent.os -equals Windows_NT
   environment: ${{ parameters.Environment }}
   strategy:
     runOnce:
