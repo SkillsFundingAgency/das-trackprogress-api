@@ -61,7 +61,7 @@ public class CreateProgressSnapshotCommandHandler : IRequestHandler<CreateProgre
             .Select(x => new SnapshotDetail(x.Id, x.Value))
             .ToList();
 
-        var progressEvent = events.First();
+        var progressEvent = events[0];
 
         var approval = new ApprovalId(
             commitmentsApprenticeshipId,

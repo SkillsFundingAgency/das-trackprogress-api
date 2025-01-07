@@ -14,10 +14,11 @@ public static class MonthYearConverter
     {
         if (value is string str)
         {
-            if (DateOnly.TryParse(str, out var dateOnly))
+            var cultureInfo = CultureInfo.InvariantCulture;
+            if (DateOnly.TryParse(str, cultureInfo, DateTimeStyles.None, out var dateOnly))
                 return dateOnly;
 
-            if (DateTime.TryParse(str, out var dateTime))
+            if (DateTime.TryParse(str, cultureInfo, DateTimeStyles.None, out var dateTime))
                 return dateTime.ToDateOnly();
 
             // also support MMYYY

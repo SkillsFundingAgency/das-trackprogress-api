@@ -32,7 +32,9 @@ builder.Services.Configure<RouteOptions>(options =>
     options.LowercaseQueryStrings = true;
 });
 
-builder.Services.AddApiAuthentication(appConfig.AzureAd);
+if(appConfig != null)
+    builder.Services.AddApiAuthentication(appConfig.AzureAd);
+
 builder.Services
     .AddControllers(options =>
     {
@@ -43,7 +45,7 @@ builder.Services
         }
     }).AddJsonOptions(options => options.UseMonthYearTypeConverter());
 
-if(!configuration.IsAcceptanceTest())
+if(!configuration.IsAcceptanceTest() && appConfig != null)
     builder.Services.AddEntityFrameworkForTrackProgress(appConfig.ApplicationSettings.DbConnectionString);
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -70,7 +72,6 @@ app.UseHttpsRedirection()
 
 app.MapControllers();
 app.UseHealthChecks();
-app.Run();
+await app.RunAsync();
 
-public partial class Program
-{ }
+public partial class Program { }

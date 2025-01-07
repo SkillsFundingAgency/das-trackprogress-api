@@ -40,17 +40,24 @@ public static class AddConfigurationExtensions
         }
         catch
         {
-            // when running locally we may not be using the storgage configuration
+            // when running locally we may not be using the storage configuration
         }
     }
 
     public static void RequireAddAzureConfiguration(ConfigurationManager configuration)
     {
+        var names = configuration["ConfigNames"]?.Split(",") ?? Array.Empty<string>();
+        var connectionString = configuration["ConfigurationStorageConnectionString"];
+        var environment = configuration["EnvironmentName"];
+
+        if (names.Length == 0) return;
+        if (string.IsNullOrEmpty(connectionString)) return;
+
         configuration.AddAzureTableStorage(options =>
         {
-            options.ConfigurationKeys = configuration["ConfigNames"].Split(",");
-            options.StorageConnectionString = configuration["ConfigurationStorageConnectionString"];
-            options.EnvironmentName = configuration["EnvironmentName"];
+            options.ConfigurationKeys = names;
+            options.StorageConnectionString = connectionString;
+            options.EnvironmentName = environment;
             options.PreFixConfigurationKeys = false;
         });
     }
