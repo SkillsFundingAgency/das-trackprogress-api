@@ -58,7 +58,7 @@ jobs:
             ServerName: $(SharedSQLServerFQDN)
             SqlUsername: $(SharedSQLServerUsername)
             DacpacFile: $(Pipeline.Workspace)/DacpacArtifact/src/${{ parameters.SolutionBaseName }}.Database/bin/Output/${{ parameters.SolutionBaseName }}.Database.dacpac
-            DatabaseName: $(DatabaseName)
+            DatabaseName: $(DatabaseNameFailoverTest)
             OverrideBlockOnPossibleDataLoss: ${{ parameters.OverrideBlockOnPossibleDataLoss }}
             Environment: ${{ parameters.Environment }}
             FailoverGroupName: $(SharedSQLServerFailoverGroupName)
@@ -69,7 +69,7 @@ jobs:
             ServerName: $(SharedSQLServerFQDN)
             SqlUsername: $(SharedSQLServerUsername)
             DacpacFile: $(Pipeline.Workspace)/DacpacArtifact/src/${{ parameters.SolutionBaseName }}.Database/bin/Output/${{ parameters.SolutionBaseName }}.Database.dacpac
-            DatabaseName: $(DatabaseNameFailoverTest)
+            DatabaseName: $(DatabaseName)
             OverrideBlockOnPossibleDataLoss: ${{ parameters.OverrideBlockOnPossibleDataLoss }}
             Environment: ${{ parameters.Environment }}
             FailoverGroupName: $(SharedSQLServerFailoverGroupName)
